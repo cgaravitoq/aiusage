@@ -60,7 +60,7 @@ const deployApps: readonly DeployApp[] = [
     buildStepName: "Build worker",
     buildRun: "bun run build",
     workingDirectory: "apps/worker",
-    smokeRun: `url="\${{ steps.deploy.outputs.deployment-url }}/api/health"\nbody="$(curl --fail --show-error --silent --retry 5 --retry-all-errors --retry-delay 5 --retry-max-time 120 --max-time 20 "$url")"\ntest "$body" = '{"ok":true}'\n`,
+    smokeRun: `url="https://aiusage.cgaravito.dev/api/health"\nbody="$(curl --fail --show-error --silent --retry 5 --retry-all-errors --retry-delay 5 --retry-max-time 120 --max-time 20 "$url")"\ntest "$body" = '{"ok":true}'\n`,
     deployStepId: "deploy",
   },
 ];
@@ -354,8 +354,8 @@ describe("CI deploy jobs", () => {
 
   it("rejects smoke testing a path other than the health endpoint", () => {
     const mutated = workflowSource.replace(
-      "deployment-url }}/api/health",
-      "deployment-url }}/",
+      "aiusage.cgaravito.dev/api/health",
+      "aiusage.cgaravito.dev/",
     );
     expect(mutated).not.toBe(workflowSource);
     expect(() => validateWorkflow(mutated)).toThrow(
@@ -396,8 +396,8 @@ describe("CI deploy jobs", () => {
 
   it("rejects reflowing the smoke test onto a single line", () => {
     const mutated = workflowSource.replace(
-      `        run: |\n          url="\${{ steps.deploy.outputs.deployment-url }}/api/health"\n`,
-      `        run: |\n          url="\${{ steps.deploy.outputs.deployment-url }}/api/health";\n`,
+      `        run: |\n          url="https://aiusage.cgaravito.dev/api/health"\n`,
+      `        run: |\n          url="https://aiusage.cgaravito.dev/api/health";\n`,
     );
     expect(mutated).not.toBe(workflowSource);
     expect(() => validateWorkflow(mutated)).toThrow(
