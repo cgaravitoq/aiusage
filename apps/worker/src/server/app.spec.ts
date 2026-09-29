@@ -457,6 +457,18 @@ describe("POST /api/report", () => {
       { last_seen: fixedNow.toISOString() },
     ]);
   });
+
+  it("keeps the summary CORS header off the report route", async () => {
+    const sqlite = await fixture();
+    const response = await app.request(
+      "/api/report",
+      reportInit(JSON.stringify(payload()), validKey),
+      { DB: sqlite.asD1() },
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  });
 });
 
 describe("GET /api/u/:login/summary", () => {
@@ -502,6 +514,22 @@ describe("GET /api/u/:login/summary", () => {
       ],
       days: [{ date: day().date, tokens: 75, cost_usd: 0.5 }],
     });
+  });
+
+  it("allows any origin to read the summary and its errors", async () => {
+    const db = await recorded();
+    const responses = await Promise.all([
+      app.request("/api/u/octocat/summary", undefined, { DB: db }),
+      app.request("/api/u/octocat/summary?range=year", undefined, { DB: db }),
+      app.request("/api/u/nobody/summary", undefined, { DB: db }),
+    ]);
+
+    expect(responses.map((response) => response.status)).toEqual([
+      200, 400, 404,
+    ]);
+    for (const response of responses) {
+      expect(response.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    }
   });
 
   it("echoes an explicit range", async () => {
