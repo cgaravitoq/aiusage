@@ -104,11 +104,19 @@ function batchesOf(
   return batches;
 }
 
-const pruneDateSql = `DELETE FROM usage_days
-WHERE user_id = ? AND machine_id = ? AND provider = ? AND date = ?`;
+/** D1 bills a row written per row deleted, updated or inserted, and a collector
+ * posts its whole window on every run, so the writes below only touch what the
+ * report changed. The report is authoritative for its window: the gap prune
+ * drops the dates it no longer carries, the date prune drops the models it no
+ * longer carries on a date it still reports, and the upsert leaves a row alone
+ * while it already holds the reported numbers. An unchanged report writes none
+ * of them. */
+const pruneGapSql = `DELETE FROM usage_days
+WHERE user_id = ? AND machine_id = ? AND provider = ? AND date > ? AND date < ?`;
 
-const pruneWindowSql = `DELETE FROM usage_days
-WHERE user_id = ? AND machine_id = ? AND provider = ? AND date > ? AND date <= ?`;
+const pruneDateSql = `DELETE FROM usage_days
+WHERE user_id = ? AND machine_id = ? AND provider = ? AND date = ?
+  AND model NOT IN (SELECT value FROM json_each(?))`;
 
 const upsertDaySql = `INSERT INTO usage_days (
   user_id, machine_id, date, provider, model, input, output, cache_create,
@@ -121,7 +129,12 @@ ON CONFLICT (user_id, machine_id, date, provider, model) DO UPDATE SET
   cache_create = excluded.cache_create,
   cache_read = excluded.cache_read,
   cost_usd = excluded.cost_usd,
-  updated_at = CURRENT_TIMESTAMP`;
+  updated_at = CURRENT_TIMESTAMP
+WHERE usage_days.input IS NOT excluded.input
+  OR usage_days.output IS NOT excluded.output
+  OR usage_days.cache_create IS NOT excluded.cache_create
+  OR usage_days.cache_read IS NOT excluded.cache_read
+  OR usage_days.cost_usd IS NOT excluded.cost_usd`;
 
 export async function hashApiKey(key: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", encoder.encode(key));
@@ -189,13 +202,22 @@ export async function recordUsage(
   let previous: string | undefined;
   for (const entry of dates) {
     groups.push([
-      ...providers.map((provider) =>
-        previous === undefined
-          ? db.prepare(pruneDateSql).bind(userId, machine, provider, entry.date)
-          : db
-              .prepare(pruneWindowSql)
-              .bind(userId, machine, provider, previous, entry.date),
-      ),
+      ...providers.flatMap((provider) => {
+        const models = entry.rows
+          .filter((row) => row.provider === provider)
+          .map((row) => row.model);
+        const pruneDate = db
+          .prepare(pruneDateSql)
+          .bind(userId, machine, provider, entry.date, JSON.stringify(models));
+        return previous === undefined
+          ? [pruneDate]
+          : [
+              db
+                .prepare(pruneGapSql)
+                .bind(userId, machine, provider, previous, entry.date),
+              pruneDate,
+            ];
+      }),
       ...entry.rows.map((day) =>
         db
           .prepare(upsertDaySql)
