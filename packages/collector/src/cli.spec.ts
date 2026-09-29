@@ -183,9 +183,9 @@ describe("collect", () => {
 });
 
 describe("install", () => {
-  const cliPath = "/repo/packages/aiusage-collector/src/cli.ts";
+  const cliPath = "/repo/packages/collector/src/cli.ts";
   const bunxCliPath =
-    "/private/var/folders/test/cache/T/bunx-501-aiusage-collector@latest/node_modules/aiusage-collector/src/cli.ts";
+    "/private/var/folders/test/cache/T/bunx-501-@cgaravitoq/aiusage@latest/node_modules/@cgaravitoq/aiusage/src/cli.ts";
   const execPath = "/opt/bun/bin/bun";
   const installIo = {
     cliPath,
@@ -262,7 +262,7 @@ describe("install", () => {
     expect(result).toEqual({
       code: 1,
       stderr: [
-        "refusing to schedule from a bunx path; install globally: bun add -g aiusage-collector, then run: aiusage install --url <url> --key <key>",
+        "refusing to schedule from a bunx path; install globally: bun add -g @cgaravitoq/aiusage, then run: aiusage install --url <url> --key <key>",
       ],
       stdout: [],
     });

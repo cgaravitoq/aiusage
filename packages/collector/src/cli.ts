@@ -97,7 +97,7 @@ async function runInstall(
 export async function runCli(argv: string[], io: CliIo): Promise<number> {
   let exitCode = 0;
   const program = new Command()
-    .name("aiusage-collector")
+    .name("@cgaravitoq/aiusage")
     .description("Report local token usage to an aiusage instance");
 
   program

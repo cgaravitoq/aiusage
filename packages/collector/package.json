@@ -1,5 +1,5 @@
 {
-  "name": "aiusage-collector",
+  "name": "@cgaravitoq/aiusage",
   "version": "0.4.0",
   "description": "Report local ccusage token usage to an aiusage instance",
   "type": "module",

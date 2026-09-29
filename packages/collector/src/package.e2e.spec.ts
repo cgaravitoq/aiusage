@@ -137,7 +137,7 @@ it("installs and runs the packed package", async () => {
   }
   const globalModules = join(bunInstall, "install", "global", "node_modules");
   const aiusage = join(bunInstall, "bin", "aiusage");
-  const tarball = join(temporaryDirectory, `aiusage-collector-${version}.tgz`);
+  const tarball = join(temporaryDirectory, `cgaravitoq-aiusage-${version}.tgz`);
   let server: Server | undefined;
   let nativeBinary = "";
   let disabledNativeBinary = "";
@@ -150,7 +150,7 @@ it("installs and runs the packed package", async () => {
       env,
     );
     const packListing = `${packed.stdout}\n${packed.stderr}`;
-    expect(packListing).toContain(`aiusage-collector-${version}.tgz`);
+    expect(packListing).toContain(`cgaravitoq-aiusage-${version}.tgz`);
     expect(packListing).toContain("LICENSE");
     expect(packListing).toContain("src/cli.ts");
     expect(packListing).toContain("src/install.ts");
@@ -162,10 +162,10 @@ it("installs and runs the packed package", async () => {
 
     await runChild("bun", ["add", "-g", tarball], temporaryDirectory, env);
     expect(await realpath(aiusage)).toContain(
-      join("install", "global", "node_modules", "aiusage-collector"),
+      join("install", "global", "node_modules", "@cgaravitoq", "aiusage"),
     );
 
-    const sources = join(globalModules, "aiusage-collector", "src");
+    const sources = join(globalModules, "@cgaravitoq", "aiusage", "src");
     for (const name of await readdir(sources)) {
       const source = await readFile(join(sources, name), "utf8");
       for (const [, specifier] of source.matchAll(/from "(\.[^"]+)"/g)) {
