@@ -33,6 +33,7 @@ The callback is derived from the request origin, so no other configuration is ne
 `GET /api/u/:login/summary?range=day|week|month` (default `week`) answers `{ login, range, from, to, timezone, totals { input, output, cache_create, cache_read, tokens, cost_usd }, providers [{ provider, tokens, cost_usd, models [{ model, tokens, cost_usd }] }], days [{ date, tokens, cost_usd }] }` with `Cache-Control: public, s-maxage=300`.
 `range` is a 1-, 7- or 30-day window ending today in the timezone of the most recently seen machine, and the collector reports only the last 14 calendar days on each run, so a longer window shows the rows earlier reports left in the store rather than a full 30 days of collection.
 Providers and models rank by tokens descending then name, days ascend, and errors are `400 {"error":"invalid range"}` and `404 {"error":"unknown user"}`.
+Every response of that route, the errors included, carries `Access-Control-Allow-Origin: *` so a page on any origin can read it from a browser, the request is a simple GET that needs no preflight, and no other route is cross-origin readable.
 
 ## Collector
 
