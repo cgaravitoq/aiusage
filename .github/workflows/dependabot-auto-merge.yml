@@ -13,7 +13,7 @@ jobs:
   dependabot:
     if: >-
       github.actor == 'dependabot[bot]' &&
-      github.repository == 'cgaravitoq/tokenmax' &&
+      github.repository == 'cgaravitoq/aiusage' &&
       github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 20

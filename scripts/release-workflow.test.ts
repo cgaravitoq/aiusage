@@ -14,15 +14,15 @@ const setupBunAction =
   "oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6";
 
 const publishRun = `version="\${GITHUB_REF_NAME#collector-v}"
-if npm view "tokenmax-collector@$version" version; then
-  echo "tokenmax-collector@$version is already published"
+if npm view "aiusage-collector@$version" version; then
+  echo "aiusage-collector@$version is already published"
   exit 0
 fi
 npm publish --provenance --access public
 `;
 
 const releaseRun =
-  'gh release view "$GITHUB_REF_NAME" || gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "tokenmax-collector ${GITHUB_REF_NAME#collector-v}"';
+  'gh release view "$GITHUB_REF_NAME" || gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "aiusage-collector ${GITHUB_REF_NAME#collector-v}"';
 
 const expectedTrigger = { push: { tags: ["collector-v*"] } };
 
@@ -270,8 +270,8 @@ describe("release workflow", () => {
 
   it("rejects publishing a version that is already on npm", () => {
     const mutated = workflowSource.replace(
-      '            echo "tokenmax-collector@$version is already published"\n            exit 0\n',
-      '            echo "tokenmax-collector@$version is already published"\n',
+      '            echo "aiusage-collector@$version is already published"\n            exit 0\n',
+      '            echo "aiusage-collector@$version is already published"\n',
     );
     expect(mutated).not.toBe(workflowSource);
     expect(() => validateWorkflow(mutated)).toThrow('step "Publish collector"');
@@ -308,8 +308,8 @@ describe("release workflow", () => {
 
   it("rejects a release step that cannot fail", () => {
     const mutated = workflowSource.replace(
-      '--title "tokenmax-collector ${GITHUB_REF_NAME#collector-v}"',
-      '--title "tokenmax-collector ${GITHUB_REF_NAME#collector-v}" || true',
+      '--title "aiusage-collector ${GITHUB_REF_NAME#collector-v}"',
+      '--title "aiusage-collector ${GITHUB_REF_NAME#collector-v}" || true',
     );
     expect(mutated).not.toBe(workflowSource);
     expect(() => validateWorkflow(mutated)).toThrow(
