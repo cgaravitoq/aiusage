@@ -1,11 +1,18 @@
+import vueRenderer from "@astrojs/vue/server.js";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeAll, describe, expect, it } from "vitest";
+import { agentPrompt, terminalAgents } from "@/snippets";
 import IndexPage from "./index.astro";
 
 let container: AstroContainer;
 
 beforeAll(async () => {
   container = await AstroContainer.create();
+  container.addServerRenderer({ name: "@astrojs/vue", renderer: vueRenderer });
+  container.addClientRenderer({
+    name: "@astrojs/vue",
+    entrypoint: "@astrojs/vue/client.js",
+  });
 });
 
 async function render(origin: string): Promise<string> {
@@ -20,7 +27,8 @@ describe("GET /", () => {
     const origin = "http://aiusage.test";
     const html = await render(origin);
 
-    expect(html.split("<li>")).toHaveLength(5);
+    const steps = html.slice(html.indexOf("<ol>"), html.indexOf("</ol>"));
+    expect(steps.split("<li>")).toHaveLength(5);
     expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
     expect(html).toContain("<h2>Copy the key</h2>");
     expect(html).toContain("<h2>Install the collector</h2>");
@@ -52,6 +60,29 @@ describe("GET /", () => {
       "&lt;script src=&quot;https://tokens.example/widget/v1.js&quot;",
     );
     expect(html).not.toContain("aiusage.test");
+  });
+
+  it("offers the agent dropdown with the prompt behind every Open in link", async () => {
+    const origin = "http://aiusage.test";
+    const html = await render(origin);
+    const query = encodeURIComponent(
+      agentPrompt(origin, { key: "<KEY>", login: "<LOGIN>" }),
+    );
+
+    expect(html).toContain(">Set up with an AI agent</summary>");
+    expect(html).toContain(">Open in</h3>");
+    expect(html).toContain(">Copy for your terminal agent</h3>");
+    for (const href of [
+      `https://chatgpt.com/?q=${query}`,
+      `https://claude.ai/new?q=${query}`,
+      `https://grok.com/?q=${query}`,
+      `https://www.perplexity.ai/search?q=${query}`,
+    ]) {
+      expect(html).toContain(`href="${href}"`);
+    }
+    for (const agent of terminalAgents) {
+      expect(html).toContain(`>${agent}</button>`);
+    }
   });
 
   it("loads the widget for cgaravitoq as the live demo", async () => {

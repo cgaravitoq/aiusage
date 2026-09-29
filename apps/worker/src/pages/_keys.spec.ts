@@ -79,7 +79,28 @@ describe("GET /keys", () => {
     expect(html).toContain(
       "&lt;aiusage-island login=&quot;octocat&quot;&gt;&lt;/aiusage-island&gt;",
     );
-    expect(html.match(/<button type="button"/g)).toHaveLength(4);
+    expect(html.match(/<button type="button"/g)).toHaveLength(8);
+  });
+
+  it("offers only the copy group, prefilled with the key and login", async () => {
+    const { html } = await render({
+      Cookie: `aiusage_new_key=${key}; aiusage_new_login=octocat`,
+    });
+
+    expect(html).toContain(">Set up with an AI agent</summary>");
+    expect(html).toContain(">Copy for your terminal agent</h3>");
+    expect(html).not.toContain(">Open in</h3>");
+    expect(html).toContain(`aiusage install --url ${origin} --key ${key}`);
+    expect(html).toContain("aiusage-island login=\\&quot;octocat\\&quot;");
+    expect(html).not.toMatch(/href="[^"]*tmx_/);
+  });
+
+  it("keeps the key out of every link when the login cookie is missing", async () => {
+    const { html } = await render({ Cookie: `aiusage_new_key=${key}` });
+
+    expect(html).toContain(">Set up with an AI agent</summary>");
+    expect(html).not.toContain(">Open in</h3>");
+    expect(html).not.toMatch(/href="[^"]*tmx_/);
   });
 
   it("leaves the login as a placeholder without its cookie", async () => {
