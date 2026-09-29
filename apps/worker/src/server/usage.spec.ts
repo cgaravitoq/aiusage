@@ -706,6 +706,146 @@ describe("recordUsage", () => {
   });
 });
 
+describe("recordUsage writes", () => {
+  const dates = Array.from({ length: 14 }, (_, index) =>
+    new Date(Date.UTC(2026, 8, 1 + index)).toISOString().slice(0, 10),
+  );
+  const models = Array.from({ length: 7 }, (_, index) => `model-${index}`);
+
+  /** Counts the rows D1 would bill for, the way the adapter reports them. */
+  function writeCounter(db: D1Database): () => number {
+    const batch = db.batch.bind(db);
+    let written = 0;
+    db.batch = async <T>(statements: D1PreparedStatement[]) => {
+      const results = await batch<T>(statements);
+      for (const result of results) written += result.meta.rows_written;
+      return results;
+    };
+    return () => written;
+  }
+
+  function windowDays(): UsageDay[] {
+    return dates.flatMap((date) =>
+      models.map((model) =>
+        day({
+          date,
+          model,
+          input: 1,
+          output: 0,
+          cache_create: 0,
+          cache_read: 0,
+          cost_usd: 1,
+        }),
+      ),
+    );
+  }
+
+  function storedRows(sqlite: SqliteD1TestDatabase, model: string): number {
+    return sqlite.query<{ rows: number }>(
+      "SELECT COUNT(*) AS rows FROM usage_days WHERE model = ?",
+      model,
+    )[0].rows;
+  }
+
+  it("writes one row when a report repeats unchanged", async () => {
+    const sqlite = database();
+    const db = sqlite.asD1();
+    const userId = seedUser(sqlite);
+    const written = writeCounter(db);
+    const days = windowDays();
+
+    await recordUsage(
+      db,
+      userId,
+      report("mac-1", days, "UTC", ["anthropic"]),
+      reportedAt,
+    );
+    const before = written();
+
+    await recordUsage(
+      db,
+      userId,
+      report("mac-1", days, "UTC", ["anthropic"]),
+      new Date("2026-09-14T12:05:00.000Z"),
+    );
+
+    expect(written() - before).toBe(1);
+  });
+
+  it("writes two rows when one model's numbers change", async () => {
+    const sqlite = database();
+    const db = sqlite.asD1();
+    const userId = seedUser(sqlite);
+    const written = writeCounter(db);
+    const days = windowDays();
+
+    await recordUsage(
+      db,
+      userId,
+      report("mac-1", days, "UTC", ["anthropic"]),
+      reportedAt,
+    );
+    const before = written();
+
+    await recordUsage(
+      db,
+      userId,
+      report(
+        "mac-1",
+        days.map((row) =>
+          row.date === dates[0] && row.model === models[0]
+            ? { ...row, input: 9 }
+            : row,
+        ),
+        "UTC",
+        ["anthropic"],
+      ),
+      new Date("2026-09-14T12:05:00.000Z"),
+    );
+
+    expect(written() - before).toBe(2);
+    expect(
+      sqlite.query<{ input: number }>(
+        "SELECT input FROM usage_days WHERE date = ? AND model = ?",
+        dates[0],
+        models[0],
+      ),
+    ).toEqual([{ input: 9 }]);
+  });
+
+  it("still deletes the rows of a model the report no longer carries", async () => {
+    const sqlite = database();
+    const db = sqlite.asD1();
+    const userId = seedUser(sqlite);
+    const written = writeCounter(db);
+    const days = windowDays();
+
+    await recordUsage(
+      db,
+      userId,
+      report("mac-1", days, "UTC", ["anthropic"]),
+      reportedAt,
+    );
+    const before = written();
+
+    await recordUsage(
+      db,
+      userId,
+      report(
+        "mac-1",
+        days.filter((row) => row.model !== models[0]),
+        "UTC",
+        ["anthropic"],
+      ),
+      new Date("2026-09-14T12:05:00.000Z"),
+    );
+
+    expect(storedRows(sqlite, models[0])).toBe(0);
+    expect(storedRows(sqlite, models[1])).toBe(dates.length);
+    expect(written() - before).toBe(dates.length + 1);
+  });
+});
+
 describe("canonicalMachineId", () => {
   it("drops the hostname in front of a macOS platform uuid", () => {
     expect(
