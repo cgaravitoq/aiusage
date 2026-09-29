@@ -89,3 +89,9 @@ aiusage install --url <url> --key <existing-key>
 
 On macOS, run `launchctl bootout gui/<uid>/dev.aiusage.collector`, then run the printed `launchctl bootstrap` command.
 On Linux, run `systemctl --user daemon-reload`, then run the printed `systemctl --user enable --now aiusage.timer` command.
+
+## Cost
+
+A collector's report writes about one row to D1 when nothing changed: the machine's last-seen stamp.
+Each run posts the whole 14-day window, and the worker skips a usage row that already holds the reported numbers, so only a row whose numbers moved costs another write.
+The schedule reports every fifteen minutes.
