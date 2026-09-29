@@ -91,26 +91,33 @@ app.post("/api/report", async (context) => {
   return context.json({ accepted: parsed.report.days.length });
 });
 
-app.get("/api/u/:login/summary", async (context) => {
-  const range = context.req.query("range") ?? "week";
-  if (!isUsageRange(range)) {
-    return context.json({ error: "invalid range" }, 400);
-  }
+app.get(
+  "/api/u/:login/summary",
+  async (context, next) => {
+    await next();
+    context.res.headers.set("Access-Control-Allow-Origin", "*");
+  },
+  async (context) => {
+    const range = context.req.query("range") ?? "week";
+    if (!isUsageRange(range)) {
+      return context.json({ error: "invalid range" }, 400);
+    }
 
-  const summary = await summarizeUsage(
-    context.env.DB,
-    context.req.param("login"),
-    range,
-    new Date(),
-  );
-  if (summary === null) {
-    return context.json({ error: "unknown user" }, 404);
-  }
+    const summary = await summarizeUsage(
+      context.env.DB,
+      context.req.param("login"),
+      range,
+      new Date(),
+    );
+    if (summary === null) {
+      return context.json({ error: "unknown user" }, 404);
+    }
 
-  return context.json(summary, 200, {
-    "Cache-Control": "public, s-maxage=300",
-  });
-});
+    return context.json(summary, 200, {
+      "Cache-Control": "public, s-maxage=300",
+    });
+  },
+);
 
 app.get("/auth/github", (context) => {
   const state = generateOAuthState();
