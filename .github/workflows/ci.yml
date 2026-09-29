@@ -119,6 +119,6 @@ jobs:
 
       - name: Smoke test production
         run: |
-          url="${{ steps.deploy.outputs.deployment-url }}/api/health"
+          url="https://aiusage.cgaravito.dev/api/health"
           body="$(curl --fail --show-error --silent --retry 5 --retry-all-errors --retry-delay 5 --retry-max-time 120 --max-time 20 "$url")"
           test "$body" = '{"ok":true}'
