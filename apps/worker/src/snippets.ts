@@ -1,6 +1,6 @@
 export function collectorCommands(origin: string, key: string): string[] {
   return [
-    "bun add -g aiusage-collector",
+    "bun add -g @cgaravitoq/aiusage",
     `aiusage install --url ${origin} --key ${key}`,
   ];
 }

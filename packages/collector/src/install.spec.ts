@@ -14,11 +14,11 @@ import { install } from "./install";
 import { collectorPaths } from "./paths";
 
 const execPath = "/opt/bun/bin/bun";
-const cliPath = "/repo/packages/aiusage-collector/src/cli.ts";
+const cliPath = "/repo/packages/collector/src/cli.ts";
 const bunxCliPath =
-  "/private/var/folders/test/cache/T/bunx-501-aiusage-collector@latest/node_modules/aiusage-collector/src/cli.ts";
+  "/private/var/folders/test/cache/T/bunx-501-@cgaravitoq/aiusage@latest/node_modules/@cgaravitoq/aiusage/src/cli.ts";
 const cacheCliPath =
-  "/tmp/aiusage-bun/install/cache/aiusage-collector/src/cli.ts";
+  "/tmp/aiusage-bun/install/cache/@cgaravitoq/aiusage/src/cli.ts";
 const machineZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const homes: string[] = [];
@@ -498,7 +498,7 @@ describe("install", () => {
           url: "http://localhost:8797",
         }),
       ).rejects.toThrow(
-        "refusing to schedule from a bunx path; install globally: bun add -g aiusage-collector, then run: aiusage install --url <url> --key <key>",
+        "refusing to schedule from a bunx path; install globally: bun add -g @cgaravitoq/aiusage, then run: aiusage install --url <url> --key <key>",
       );
 
       expect(await readdir(home)).toEqual([]);
@@ -533,7 +533,7 @@ describe("install", () => {
     const home = await makeHome();
     const paths = collectorPaths({ home });
     const globalCliPath =
-      "/tmp/aiusage-bun/install/global/node_modules/aiusage-collector/src/cli.ts";
+      "/tmp/aiusage-bun/install/global/node_modules/@cgaravitoq/aiusage/src/cli.ts";
 
     const plan = await install({
       cliPath: globalCliPath,

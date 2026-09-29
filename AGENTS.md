@@ -7,7 +7,7 @@ aiusage is a self-hostable token-usage service: a Cloudflare Worker that stores 
 ```text
 aiusage/
 ├── apps/worker/         the Astro worker
-├── packages/collector/  npm package aiusage-collector, bin aiusage
+├── packages/collector/  npm package @cgaravitoq/aiusage, bin aiusage
 ├── scripts/             dependency policy tests
 └── .github/             CI and Dependabot automation
 ```
@@ -69,8 +69,9 @@ The widget is browser code, so `apps/worker/src/widget/tsconfig.json` checks it 
 
 ## Collector
 
-The collector is `packages/collector`, npm name `aiusage-collector`, bin `aiusage`, and requires Bun 1.4.0 or newer because `src/cli.ts` runs as TypeScript and reads SQLite through `node:sqlite`.
-Install it with `bun add -g aiusage-collector`, then run `aiusage install --url <url> --key <key>` with optional `--timezone <zone>`.
+The collector is `packages/collector`, npm name `@cgaravitoq/aiusage`, bin `aiusage`, and requires Bun 1.4.0 or newer because `src/cli.ts` runs as TypeScript and reads SQLite through `node:sqlite`.
+The name is scoped because npm refuses the unscoped spelling as too similar to the existing `ai-usage-collector`.
+Install it with `bun add -g @cgaravitoq/aiusage`, then run `aiusage install --url <url> --key <key>` with optional `--timezone <zone>`.
 Use the global package for scheduling; non-dry `install` rejects Bun's `/install/cache/` and `bunx-<digits>-<package>` paths, while `--dry-run` can still print their plans.
 By default it reads `~/.config/aiusage/config.json`, with `AIUSAGE_HOME` and `XDG_CONFIG_HOME` able to change that location, and sends the report to `POST /api/report` of every target in it.
 The config is `{ targets: [{ url, key }], timezone? }`; the single-target `{ url, key, timezone? }` shape written before targets existed still reads.

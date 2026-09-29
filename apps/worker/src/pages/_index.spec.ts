@@ -25,7 +25,7 @@ describe("GET /", () => {
     expect(html).toContain("<h2>Copy the key</h2>");
     expect(html).toContain("<h2>Install the collector</h2>");
     expect(html).toContain("<h2>Embed the widget</h2>");
-    expect(html).toContain("bun add -g aiusage-collector");
+    expect(html).toContain("bun add -g @cgaravitoq/aiusage");
     expect(html).toContain(
       `aiusage install --url ${origin} --key &lt;key&gt;</code>`,
     );

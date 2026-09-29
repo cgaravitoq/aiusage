@@ -31,7 +31,7 @@
     "prepare": "husky",
     "test": "bun --filter '*' test",
     "test:dependency-policy": "bun test scripts/",
-    "test:package": "bun --filter aiusage-collector test:package",
+    "test:package": "bun --filter @cgaravitoq/aiusage test:package",
     "test:watch": "bun --filter '*' test:watch"
   },
   "workspaces": [
