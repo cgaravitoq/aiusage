@@ -1,7 +1,13 @@
 ---
+import AgentSetup from "@/components/agent-setup.vue";
 import KeyReveal from "@/components/key-reveal.vue";
 import Base from "@/layouts/base.astro";
-import { collectorCommands, widgetSnippet } from "@/snippets";
+import {
+  agentPrompt,
+  collectorCommands,
+  terminalAgents,
+  widgetSnippet,
+} from "@/snippets";
 
 export const prerender = false;
 
@@ -39,6 +45,12 @@ const installCommand = collectorCommands(origin, "<key>")[1];
           apiKey={newKey}
           commands={collectorCommands(origin, newKey)}
           snippet={widgetSnippet(origin, login ?? "<login>")}
+          client:load
+        />
+        <AgentSetup
+          prompt={agentPrompt(origin, { key: newKey, login: login ?? "<LOGIN>" })}
+          openIn={[]}
+          agents={terminalAgents}
           client:load
         />
         <p>
