@@ -41,9 +41,30 @@ function bindsAiusageDatabase(value: unknown): boolean {
   );
 }
 
+function servesOnlyCustomDomains(value: unknown): boolean {
+  if (!isRecord(value)) return false;
+  return value.workers_dev === false && value.preview_urls === false;
+}
+
 describe("wrangler configuration", () => {
   it("binds the D1 database as DB with a migrations directory and a UUID id", () => {
     expect(bindsAiusageDatabase(config)).toBe(true);
+  });
+
+  it("turns off both provider aliases", () => {
+    expect(servesOnlyCustomDomains(config)).toBe(true);
+  });
+
+  it("rejects a missing or enabled provider alias", () => {
+    for (const wrong of [
+      { workers_dev: true, preview_urls: false },
+      { workers_dev: false, preview_urls: true },
+      { workers_dev: false },
+      {},
+      null,
+    ]) {
+      expect(servesOnlyCustomDomains(wrong)).toBe(false);
+    }
   });
 
   it("accepts an alternate worker name and database id", () => {
