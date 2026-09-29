@@ -5,9 +5,9 @@
   "resources": [
     {
       "type": "local",
-      "name": "tokenmax",
+      "name": "aiusage",
       "path": ".",
-      "specialNotes": "Source-of-truth tokenmax repository. Inspect AGENTS.md, packages/collector, apps/worker and package.json before proposing changes."
+      "specialNotes": "Source-of-truth aiusage repository. Inspect AGENTS.md, packages/collector, apps/worker and package.json before proposing changes."
     },
     {
       "type": "git",

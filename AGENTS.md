@@ -1,13 +1,13 @@
-# tokenmax - Agent Context
+# aiusage - Agent Context
 
-tokenmax is a self-hostable token-usage service: a Cloudflare Worker that stores and serves usage, and a Bun CLI that reports it.
+aiusage is a self-hostable token-usage service: a Cloudflare Worker that stores and serves usage, and a Bun CLI that reports it.
 
 ## Structure
 
 ```text
-tokenmax/
+aiusage/
 ├── apps/worker/         the Astro worker
-├── packages/collector/  npm package tokenmax-collector, bin tokenmax
+├── packages/collector/  npm package aiusage-collector, bin aiusage
 ├── scripts/             dependency policy tests
 └── .github/             CI and Dependabot automation
 ```
@@ -19,7 +19,7 @@ tokenmax/
 - Biome 2.5 formats and lints, and oxlint 1.82 with the ultracite anti-slop preset is the second linter.
 - Vitest 4.1 runs the workspace specs, and `bun test` runs the dependency policy and workflow golden tests under `scripts/`.
 - The collector spawns ccusage 20.0.20, pinned exact because it reads an undocumented JSON shape through a per-platform native binary.
-- The collector also decodes the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations` itself, because ccusage has no adapter for them: each model step is a protobuf in SQLite, read through `node:sqlite`, priced from the LiteLLM table cached for a day at `~/.config/tokenmax/litellm-prices.json`, and reported as the `antigravity` provider.
+- The collector also decodes the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations` itself, because ccusage has no adapter for them: each model step is a protobuf in SQLite, read through `node:sqlite`, priced from the LiteLLM table cached for a day at `~/.config/aiusage/litellm-prices.json`, and reported as the `antigravity` provider.
 - The collector reads the Devin CLI transcripts under `~/.local/share/devin/cli/transcripts` for the same reason: each agent step of an ATIF JSON carries `metrics.prompt_tokens`, `completion_tokens`, `cached_tokens` and `extra.cache_creation_input_tokens`, the uncached input is the prompt minus both caches, the effort suffix of `model_name` collapses into the LiteLLM name (`claude-fable-5-1-xhigh` to `claude-fable-5-1`, `gpt-5-6-sol-high` to `gpt-5.6-sol`), and the rows are reported as the `devin` provider.
 
 ## Conventions
@@ -56,11 +56,11 @@ bun run build                  # astro build in apps/worker
 
 ## Worker
 
-The worker is `apps/worker`, package `@tokenmax/worker`: Astro 7 with the Cloudflare adapter, a Hono 4 API under `src/server`, one Vue 3 island on `/keys` and D1 for storage.
+The worker is `apps/worker`, package `@aiusage/worker`: Astro 7 with the Cloudflare adapter, a Hono 4 API under `src/server`, one Vue 3 island on `/keys` and D1 for storage.
 `bun run build` builds it from the root and `bun run dev` serves it with `astro dev`.
 Bindings come from `apps/worker/wrangler.jsonc` and are typed by `bunx wrangler types` into `worker-configuration.d.ts`, which is generated and never hand-edited; the six plain secrets are typed by hand in `src/env.d.ts` and set locally through `apps/worker/.dev.vars`.
 The privacy page renders the four `PRIVACY_*` secrets, so every instance carries its own controller identity.
-The worker also serves `<tokenmax-island>` at `/widget/v1.js` from `apps/worker/src/widget`: a dependency-free web component any site embeds with `<script src="<url>/widget/v1.js" defer></script><tokenmax-island login="jane">`.
+The worker also serves `<aiusage-island>` at `/widget/v1.js` from `apps/worker/src/widget`: a dependency-free web component any site embeds with `<script src="<url>/widget/v1.js" defer></script><aiusage-island login="jane">`.
 `bun run build` bundles `src/widget/index.ts` into the gitignored `apps/worker/public/widget/v1.js` with `bun build` before `astro build` copies `public/` into the adapter's client directory, and `apps/worker/public/_headers` gives that path `Cache-Control: public, max-age=3600`.
 The widget is browser code, so `apps/worker/src/widget/tsconfig.json` checks it against the DOM lib with `tsc --noEmit` and `apps/worker/tsconfig.json` excludes that directory, because the workerd globals in `worker-configuration.d.ts` shadow `Element.append`.
 `bunx wrangler d1 migrations apply DB --remote` applies the migrations from `apps/worker`, and `bunx wrangler deploy --dry-run` checks a build without touching Cloudflare.
@@ -69,10 +69,10 @@ The widget is browser code, so `apps/worker/src/widget/tsconfig.json` checks it 
 
 ## Collector
 
-The collector is `packages/collector`, npm name `tokenmax-collector`, bin `tokenmax`, and requires Bun 1.4.0 or newer because `src/cli.ts` runs as TypeScript and reads SQLite through `node:sqlite`.
-Install it with `bun add -g tokenmax-collector`, then run `tokenmax install --url <url> --key <key>` with optional `--timezone <zone>`.
+The collector is `packages/collector`, npm name `aiusage-collector`, bin `aiusage`, and requires Bun 1.4.0 or newer because `src/cli.ts` runs as TypeScript and reads SQLite through `node:sqlite`.
+Install it with `bun add -g aiusage-collector`, then run `aiusage install --url <url> --key <key>` with optional `--timezone <zone>`.
 Use the global package for scheduling; non-dry `install` rejects Bun's `/install/cache/` and `bunx-<digits>-<package>` paths, while `--dry-run` can still print their plans.
-By default it reads `~/.config/tokenmax/config.json`, with `TOKENMAX_HOME` and `XDG_CONFIG_HOME` able to change that location, and sends the report to `POST /api/report` of every target in it.
+By default it reads `~/.config/aiusage/config.json`, with `AIUSAGE_HOME` and `XDG_CONFIG_HOME` able to change that location, and sends the report to `POST /api/report` of every target in it.
 The config is `{ targets: [{ url, key }], timezone? }`; the single-target `{ url, key, timezone? }` shape written before targets existed still reads.
 `install` adds the target for a new url, replaces the key of a url already configured and keeps the rest, then writes that config plus a launchd agent on macOS or a systemd user timer on Linux, and Windows is unsupported.
 `collect` reports the last 14 calendar days to `/api/report` and prints one `accepted <n> days for <machine> at <url>` line per target, where `<n>` is the number of usage rows the instance stored and not a count of calendar days; it exits 1 when any target rejects the report.
