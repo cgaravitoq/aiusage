@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "astro build",
-    "check-types": "astro check",
+    "build": "bun run widget:build && astro build",
+    "check-types": "astro check && tsc --noEmit -p src/widget",
     "dev": "astro dev",
     "preview": "astro preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "widget:build": "bun build src/widget/index.ts --minify --target=browser --format=iife --outfile public/widget/v1.js"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.3.3",
