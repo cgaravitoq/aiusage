@@ -9,7 +9,7 @@ const hang = "setTimeout(() => {}, 8000)";
 let dir: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), "tokenmax-command-"));
+  dir = await mkdtemp(join(tmpdir(), "aiusage-command-"));
 });
 
 afterEach(async () => {

@@ -8,7 +8,7 @@ import { writeTranscript } from "./test/devin-fixture";
 let dir: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), "tokenmax-devin-"));
+  dir = await mkdtemp(join(tmpdir(), "aiusage-devin-"));
 });
 
 afterEach(async () => {

@@ -16,9 +16,9 @@ let dir: string;
 let configFile: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), "tokenmax-config-"));
-  await mkdir(join(dir, "tokenmax"));
-  configFile = join(dir, "tokenmax", "config.json");
+  dir = await mkdtemp(join(tmpdir(), "aiusage-config-"));
+  await mkdir(join(dir, "aiusage"));
+  configFile = join(dir, "aiusage", "config.json");
 });
 
 afterEach(async () => {
@@ -29,7 +29,7 @@ describe("readConfig", () => {
   it("reads the targets the collector reports to", async () => {
     await writeConfig(configFile, {
       targets: [
-        { key: "tmx_a", url: "https://tokenmax.example" },
+        { key: "tmx_a", url: "https://aiusage.example" },
         { key: "otv_b", url: "https://tv.example" },
       ],
       timezone: "Europe/Madrid",
@@ -38,7 +38,7 @@ describe("readConfig", () => {
     expect(await readConfig(configFile)).toEqual({
       config: {
         targets: [
-          { key: "tmx_a", url: "https://tokenmax.example" },
+          { key: "tmx_a", url: "https://aiusage.example" },
           { key: "otv_b", url: "https://tv.example" },
         ],
         timezone: "Europe/Madrid",
@@ -53,13 +53,13 @@ describe("readConfig", () => {
       JSON.stringify({
         key: "tmx_a",
         timezone: "Europe/Madrid",
-        url: "https://tokenmax.example",
+        url: "https://aiusage.example",
       }),
     );
 
     expect(await readConfig(configFile)).toEqual({
       config: {
-        targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+        targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
         timezone: "Europe/Madrid",
       },
       kind: "ok",
@@ -72,7 +72,7 @@ describe("readConfig", () => {
     expect(await readConfig(configFile)).toMatchObject({
       kind: "invalid",
       message: expect.stringContaining(
-        `invalid tokenmax config at ${configFile}`,
+        `invalid aiusage config at ${configFile}`,
       ),
     });
   });
@@ -81,7 +81,7 @@ describe("readConfig", () => {
     await writeFile(
       configFile,
       JSON.stringify({
-        targets: [{ key: "", url: "https://tokenmax.example" }],
+        targets: [{ key: "", url: "https://aiusage.example" }],
       }),
     );
 
@@ -92,14 +92,14 @@ describe("readConfig", () => {
     await writeFile(
       configFile,
       JSON.stringify({
-        targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+        targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
         timezone: "Mars/Olympus",
       }),
     );
 
     expect(await readConfig(configFile)).toEqual({
       kind: "invalid",
-      message: `invalid tokenmax config at ${configFile}: timezone: invalid timezone`,
+      message: `invalid aiusage config at ${configFile}: timezone: invalid timezone`,
     });
   });
 
@@ -111,11 +111,11 @@ describe("readConfig", () => {
 describe("writeConfig", () => {
   it("writes the targets shape", async () => {
     await writeConfig(configFile, {
-      targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+      targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
     });
 
     expect(JSON.parse(await readFile(configFile, "utf8"))).toEqual({
-      targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+      targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
     });
   });
 
@@ -123,7 +123,7 @@ describe("writeConfig", () => {
     const spy = vi.spyOn(fsp, "writeFile");
     try {
       await writeConfig(configFile, {
-        targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+        targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
       });
 
       expect(spy).toHaveBeenCalledTimes(1);
@@ -138,7 +138,7 @@ describe("writeConfig", () => {
 
     expect((await stat(configFile)).mode & 0o777).toBe(0o600);
     expect(JSON.parse(await readFile(configFile, "utf8"))).toEqual({
-      targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+      targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
     });
   });
 
@@ -148,7 +148,7 @@ describe("writeConfig", () => {
     const spy = vi.spyOn(fsp, "writeFile");
     try {
       await writeConfig(configFile, {
-        targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+        targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
       });
 
       expect(spy.mock.calls.map((call) => call[0])).toEqual([
@@ -160,7 +160,7 @@ describe("writeConfig", () => {
 
     expect((await stat(configFile)).mode & 0o777).toBe(0o600);
     expect(JSON.parse(await readFile(configFile, "utf8"))).toEqual({
-      targets: [{ key: "tmx_a", url: "https://tokenmax.example" }],
+      targets: [{ key: "tmx_a", url: "https://aiusage.example" }],
     });
   });
 });

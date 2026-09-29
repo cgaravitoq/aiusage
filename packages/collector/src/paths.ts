@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 export interface CollectorEnv {
   home: string;
   platform?: NodeJS.Platform;
-  tokenmaxHome?: string;
+  aiusageHome?: string;
   xdgConfigHome?: string;
   xdgStateHome?: string;
 }
@@ -23,7 +23,7 @@ export function processEnv(): CollectorEnv {
   return {
     home: homedir(),
     platform: process.platform,
-    tokenmaxHome: process.env.TOKENMAX_HOME,
+    aiusageHome: process.env.AIUSAGE_HOME,
     xdgConfigHome: process.env.XDG_CONFIG_HOME,
     xdgStateHome: process.env.XDG_STATE_HOME,
   };
@@ -31,12 +31,12 @@ export function processEnv(): CollectorEnv {
 
 function logDirFor(env: CollectorEnv, home: string): string {
   if (env.platform !== "linux") {
-    return resolve(home, "Library", "Logs", "tokenmax");
+    return resolve(home, "Library", "Logs", "aiusage");
   }
-  if (env.tokenmaxHome === undefined && env.xdgStateHome !== undefined) {
-    return resolve(env.xdgStateHome, "tokenmax", "logs");
+  if (env.aiusageHome === undefined && env.xdgStateHome !== undefined) {
+    return resolve(env.xdgStateHome, "aiusage", "logs");
   }
-  return resolve(home, ".local", "state", "tokenmax", "logs");
+  return resolve(home, ".local", "state", "aiusage", "logs");
 }
 
 export function systemdUserUnitDir(env: CollectorEnv): string {
@@ -46,25 +46,25 @@ export function systemdUserUnitDir(env: CollectorEnv): string {
 }
 
 export function collectorPaths(env: CollectorEnv): CollectorPaths {
-  const home = resolve(env.tokenmaxHome ?? env.home);
+  const home = resolve(env.aiusageHome ?? env.home);
   const configHome =
-    env.tokenmaxHome === undefined && env.xdgConfigHome !== undefined
+    env.aiusageHome === undefined && env.xdgConfigHome !== undefined
       ? resolve(env.xdgConfigHome)
       : resolve(home, ".config");
   const logDir = logDirFor(env, home);
 
   return {
-    configFile: resolve(configHome, "tokenmax", "config.json"),
+    configFile: resolve(configHome, "aiusage", "config.json"),
     plist: resolve(
       home,
       "Library",
       "LaunchAgents",
-      "dev.tokenmax.collector.plist",
+      "dev.aiusage.collector.plist",
     ),
-    pricesFile: resolve(configHome, "tokenmax", "litellm-prices.json"),
-    service: resolve(configHome, "systemd", "user", "tokenmax.service"),
-    stderrLog: resolve(logDir, "tokenmax.err.log"),
-    stdoutLog: resolve(logDir, "tokenmax.log"),
-    timer: resolve(configHome, "systemd", "user", "tokenmax.timer"),
+    pricesFile: resolve(configHome, "aiusage", "litellm-prices.json"),
+    service: resolve(configHome, "systemd", "user", "aiusage.service"),
+    stderrLog: resolve(logDir, "aiusage.err.log"),
+    stdoutLog: resolve(logDir, "aiusage.log"),
+    timer: resolve(configHome, "systemd", "user", "aiusage.timer"),
   };
 }

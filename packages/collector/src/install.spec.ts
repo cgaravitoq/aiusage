@@ -14,16 +14,16 @@ import { install } from "./install";
 import { collectorPaths } from "./paths";
 
 const execPath = "/opt/bun/bin/bun";
-const cliPath = "/repo/packages/tokenmax-collector/src/cli.ts";
+const cliPath = "/repo/packages/aiusage-collector/src/cli.ts";
 const bunxCliPath =
-  "/private/var/folders/test/cache/T/bunx-501-tokenmax-collector@latest/node_modules/tokenmax-collector/src/cli.ts";
+  "/private/var/folders/test/cache/T/bunx-501-aiusage-collector@latest/node_modules/aiusage-collector/src/cli.ts";
 const cacheCliPath =
-  "/tmp/tokenmax-bun/install/cache/tokenmax-collector/src/cli.ts";
+  "/tmp/aiusage-bun/install/cache/aiusage-collector/src/cli.ts";
 const machineZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const homes: string[] = [];
 
-const makeHome = async (prefix = "tokenmax-install-"): Promise<string> => {
+const makeHome = async (prefix = "aiusage-install-"): Promise<string> => {
   const home = await mkdtemp(join(tmpdir(), prefix));
   homes.push(home);
   return home;
@@ -36,7 +36,7 @@ const plistFor = (
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>dev.tokenmax.collector</string>
+  <string>dev.aiusage.collector</string>
   <key>ProgramArguments</key>
   <array>
     <string>${execPath}</string>
@@ -48,15 +48,15 @@ const plistFor = (
   <key>RunAtLoad</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>${home}/Library/Logs/tokenmax/tokenmax.log</string>
+  <string>${home}/Library/Logs/aiusage/aiusage.log</string>
   <key>StandardErrorPath</key>
-  <string>${home}/Library/Logs/tokenmax/tokenmax.err.log</string>
+  <string>${home}/Library/Logs/aiusage/aiusage.err.log</string>
 </dict>
 </plist>
 `;
 
 const serviceFor = (): string => `[Unit]
-Description=Report local token usage to tokenmax
+Description=Report local token usage to aiusage
 
 [Service]
 Type=oneshot
@@ -64,10 +64,10 @@ ExecStart="${execPath}" "${cliPath}" collect
 `;
 
 const timerFor = (): string => `[Unit]
-Description=Report local token usage to tokenmax every five minutes
+Description=Report local token usage to aiusage every five minutes
 
 [Timer]
-Unit=tokenmax.service
+Unit=aiusage.service
 OnBootSec=1min
 OnUnitActiveSec=5min
 
@@ -269,9 +269,7 @@ describe("install", () => {
         uid: 501,
         url: "https://c.example",
       }),
-    ).rejects.toThrow(
-      `could not parse tokenmax config at ${paths.configFile}:`,
-    );
+    ).rejects.toThrow(`could not parse aiusage config at ${paths.configFile}:`);
 
     expect(await readFile(paths.configFile, "utf8")).toBe("{");
   });
@@ -303,7 +301,7 @@ describe("install", () => {
         url: "https://c.example",
       }),
     ).rejects.toThrow(
-      `invalid tokenmax config at ${paths.configFile}: timezone: invalid timezone`,
+      `invalid aiusage config at ${paths.configFile}: timezone: invalid timezone`,
     );
 
     expect(await readFile(paths.configFile, "utf8")).toBe(before);
@@ -335,7 +333,7 @@ describe("install", () => {
       "target: http://localhost:8797",
       `schedule: ${paths.service}`,
       `schedule: ${paths.timer}`,
-      "load: systemctl --user enable --now tokenmax.timer",
+      "load: systemctl --user enable --now aiusage.timer",
     ]);
   });
 
@@ -355,8 +353,8 @@ describe("install", () => {
       url: "http://localhost:8797",
     });
 
-    expect(paths.service).toBe(`${home}/xdg/systemd/user/tokenmax.service`);
-    expect(paths.timer).toBe(`${home}/xdg/systemd/user/tokenmax.timer`);
+    expect(paths.service).toBe(`${home}/xdg/systemd/user/aiusage.service`);
+    expect(paths.timer).toBe(`${home}/xdg/systemd/user/aiusage.timer`);
     expect(plan.files.map((file) => file.path)).toEqual([
       paths.service,
       paths.timer,
@@ -368,7 +366,7 @@ describe("install", () => {
   });
 
   it("quotes a plist path a shell would split", async () => {
-    const home = await makeHome("tokenmax-esc-&<>-");
+    const home = await makeHome("aiusage-esc-&<>-");
     const lines: string[] = [];
     const paths = collectorPaths({ home });
 
@@ -390,13 +388,13 @@ describe("install", () => {
 
   it("warns when the unit lands outside the systemd load path", async () => {
     const home = await makeHome();
-    const tokenmaxHome = join(home, "tmhome");
+    const aiusageHome = join(home, "tmhome");
     const lines: string[] = [];
 
     await install({
       cliPath,
       dryRun: true,
-      env: { home, tokenmaxHome },
+      env: { home, aiusageHome },
       execPath,
       key: "tmx_secret_value",
       log: (line) => lines.push(line),
@@ -405,12 +403,12 @@ describe("install", () => {
     });
 
     expect(lines).toContain(
-      `warning: systemd will not read units from ${tokenmaxHome}/.config/systemd/user; it reads them from ${home}/.config/systemd/user`,
+      `warning: systemd will not read units from ${aiusageHome}/.config/systemd/user; it reads them from ${home}/.config/systemd/user`,
     );
   });
 
   it("escapes the metacharacters of a scheduled path in the plist and the unit", async () => {
-    const home = await makeHome("tokenmax-esc-&<>-");
+    const home = await makeHome("aiusage-esc-&<>-");
     const nastyExecPath = String.raw`/opt/bun & <> % $ " \n/bin/bun`;
     const nastyCliPath = String.raw`/opt/pkg & <> % $ " \n/cli.ts`;
     const base = {
@@ -427,7 +425,7 @@ describe("install", () => {
       uid: 501,
     });
     const plist = await readFile(
-      join(home, "Library", "LaunchAgents", "dev.tokenmax.collector.plist"),
+      join(home, "Library", "LaunchAgents", "dev.aiusage.collector.plist"),
       "utf8",
     );
     expect(plist).toContain(
@@ -443,12 +441,12 @@ describe("install", () => {
       `<string>${home
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")}/Library/Logs/tokenmax/tokenmax.log</string>`,
+        .replaceAll(">", "&gt;")}/Library/Logs/aiusage/aiusage.log</string>`,
     );
 
     await install({ ...base, cliPath: nastyCliPath, platform: "linux" });
     const service = await readFile(
-      join(home, ".config", "systemd", "user", "tokenmax.service"),
+      join(home, ".config", "systemd", "user", "aiusage.service"),
       "utf8",
     );
     expect(service).toContain(
@@ -500,7 +498,7 @@ describe("install", () => {
           url: "http://localhost:8797",
         }),
       ).rejects.toThrow(
-        "refusing to schedule from a bunx path; install globally: bun add -g tokenmax-collector, then run: tokenmax install --url <url> --key <key>",
+        "refusing to schedule from a bunx path; install globally: bun add -g aiusage-collector, then run: aiusage install --url <url> --key <key>",
       );
 
       expect(await readdir(home)).toEqual([]);
@@ -535,7 +533,7 @@ describe("install", () => {
     const home = await makeHome();
     const paths = collectorPaths({ home });
     const globalCliPath =
-      "/tmp/tokenmax-bun/install/global/node_modules/tokenmax-collector/src/cli.ts";
+      "/tmp/aiusage-bun/install/global/node_modules/aiusage-collector/src/cli.ts";
 
     const plan = await install({
       cliPath: globalCliPath,
@@ -585,39 +583,39 @@ describe("install", () => {
 });
 
 describe("collectorPaths", () => {
-  it("redirects every path under TOKENMAX_HOME", () => {
+  it("redirects every path under AIUSAGE_HOME", () => {
     const paths = collectorPaths({
       home: "/tmp/unused",
-      tokenmaxHome: "/tmp/tokenmax-p4",
+      aiusageHome: "/tmp/aiusage-p4",
       xdgConfigHome: "/xdg/config",
     });
 
     expect(paths.configFile).toBe(
-      "/tmp/tokenmax-p4/.config/tokenmax/config.json",
+      "/tmp/aiusage-p4/.config/aiusage/config.json",
     );
     expect(paths.plist).toBe(
-      "/tmp/tokenmax-p4/Library/LaunchAgents/dev.tokenmax.collector.plist",
+      "/tmp/aiusage-p4/Library/LaunchAgents/dev.aiusage.collector.plist",
     );
     expect(paths.stdoutLog).toBe(
-      "/tmp/tokenmax-p4/Library/Logs/tokenmax/tokenmax.log",
+      "/tmp/aiusage-p4/Library/Logs/aiusage/aiusage.log",
     );
     expect(paths.stderrLog).toBe(
-      "/tmp/tokenmax-p4/Library/Logs/tokenmax/tokenmax.err.log",
+      "/tmp/aiusage-p4/Library/Logs/aiusage/aiusage.err.log",
     );
     expect(paths.service).toBe(
-      "/tmp/tokenmax-p4/.config/systemd/user/tokenmax.service",
+      "/tmp/aiusage-p4/.config/systemd/user/aiusage.service",
     );
     expect(paths.timer).toBe(
-      "/tmp/tokenmax-p4/.config/systemd/user/tokenmax.timer",
+      "/tmp/aiusage-p4/.config/systemd/user/aiusage.timer",
     );
   });
 
   it("honours XDG_CONFIG_HOME", () => {
     expect(collectorPaths({ home: "/home/u" }).configFile).toBe(
-      "/home/u/.config/tokenmax/config.json",
+      "/home/u/.config/aiusage/config.json",
     );
     expect(
       collectorPaths({ home: "/home/u", xdgConfigHome: "/xdg" }).configFile,
-    ).toBe("/xdg/tokenmax/config.json");
+    ).toBe("/xdg/aiusage/config.json");
   });
 });

@@ -55,7 +55,7 @@ const childEnvironment = (temporaryDirectory: string): NodeJS.ProcessEnv => {
     BUN_INSTALL: join(temporaryDirectory, "bun"),
     CLAUDE_CONFIG_DIR: join(home, ".claude"),
     HOME: home,
-    TOKENMAX_HOME: home,
+    AIUSAGE_HOME: home,
     XDG_CACHE_HOME: join(home, ".cache"),
     XDG_CONFIG_HOME: join(home, ".config"),
     XDG_STATE_HOME: join(home, ".local", "state"),
@@ -128,7 +128,7 @@ afterAll(async () => {
 });
 
 it("installs and runs the packed package", async () => {
-  const temporaryDirectory = await mkdtemp(join(tmpdir(), "tokenmax-package-"));
+  const temporaryDirectory = await mkdtemp(join(tmpdir(), "aiusage-package-"));
   temporaryDirectories.push(temporaryDirectory);
   const env = childEnvironment(temporaryDirectory);
   const bunInstall = env.BUN_INSTALL;
@@ -136,8 +136,8 @@ it("installs and runs the packed package", async () => {
     throw new Error("BUN_INSTALL is required");
   }
   const globalModules = join(bunInstall, "install", "global", "node_modules");
-  const tokenmax = join(bunInstall, "bin", "tokenmax");
-  const tarball = join(temporaryDirectory, `tokenmax-collector-${version}.tgz`);
+  const aiusage = join(bunInstall, "bin", "aiusage");
+  const tarball = join(temporaryDirectory, `aiusage-collector-${version}.tgz`);
   let server: Server | undefined;
   let nativeBinary = "";
   let disabledNativeBinary = "";
@@ -150,7 +150,7 @@ it("installs and runs the packed package", async () => {
       env,
     );
     const packListing = `${packed.stdout}\n${packed.stderr}`;
-    expect(packListing).toContain(`tokenmax-collector-${version}.tgz`);
+    expect(packListing).toContain(`aiusage-collector-${version}.tgz`);
     expect(packListing).toContain("LICENSE");
     expect(packListing).toContain("src/cli.ts");
     expect(packListing).toContain("src/install.ts");
@@ -161,11 +161,11 @@ it("installs and runs the packed package", async () => {
     expect(packListing).toContain("Total files: 18");
 
     await runChild("bun", ["add", "-g", tarball], temporaryDirectory, env);
-    expect(await realpath(tokenmax)).toContain(
-      join("install", "global", "node_modules", "tokenmax-collector"),
+    expect(await realpath(aiusage)).toContain(
+      join("install", "global", "node_modules", "aiusage-collector"),
     );
 
-    const sources = join(globalModules, "tokenmax-collector", "src");
+    const sources = join(globalModules, "aiusage-collector", "src");
     for (const name of await readdir(sources)) {
       const source = await readFile(join(sources, name), "utf8");
       for (const [, specifier] of source.matchAll(/from "(\.[^"]+)"/g)) {
@@ -174,7 +174,7 @@ it("installs and runs the packed package", async () => {
     }
 
     const dryRun = await runChild(
-      tokenmax,
+      aiusage,
       [
         "install",
         "--url",
@@ -191,14 +191,14 @@ it("installs and runs the packed package", async () => {
     );
     expect(dryRun.stdout).not.toContain(packageDirectory);
     if (process.platform === "darwin") {
-      expect(dryRun.stdout).toContain("dev.tokenmax.collector");
+      expect(dryRun.stdout).toContain("dev.aiusage.collector");
       expect(dryRun.stdout).toContain("Library/LaunchAgents");
     } else {
-      expect(dryRun.stdout).toContain("tokenmax.service");
-      expect(dryRun.stdout).toContain("tokenmax.timer");
+      expect(dryRun.stdout).toContain("aiusage.service");
+      expect(dryRun.stdout).toContain("aiusage.timer");
       expect(dryRun.stdout).toContain("ExecStart");
       expect(dryRun.stdout).toContain(
-        "systemctl --user enable --now tokenmax.timer",
+        "systemctl --user enable --now aiusage.timer",
       );
     }
 
@@ -258,7 +258,7 @@ it("installs and runs the packed package", async () => {
     }
     const configFile = join(
       env.XDG_CONFIG_HOME ?? "",
-      "tokenmax",
+      "aiusage",
       "config.json",
     );
     await mkdir(dirname(configFile), { recursive: true });
@@ -271,7 +271,7 @@ it("installs and runs the packed package", async () => {
     );
 
     const collected = await runChild(
-      tokenmax,
+      aiusage,
       ["collect"],
       temporaryDirectory,
       env,
@@ -304,7 +304,7 @@ it("installs and runs the packed package", async () => {
     await rename(nativeBinary, disabledNativeBinary);
     let failure: ChildFailure | undefined;
     try {
-      await runChild(tokenmax, ["collect"], temporaryDirectory, env);
+      await runChild(aiusage, ["collect"], temporaryDirectory, env);
     } catch (error) {
       if (!isChildFailure(error)) {
         throw error;
@@ -319,7 +319,7 @@ it("installs and runs the packed package", async () => {
     disabledNativeBinary = "";
 
     const restored = await runChild(
-      tokenmax,
+      aiusage,
       ["collect"],
       temporaryDirectory,
       env,

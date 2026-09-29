@@ -1,10 +1,10 @@
 {
-  "name": "tokenmax-collector",
-  "version": "0.3.2",
-  "description": "Report local ccusage token usage to a tokenmax instance",
+  "name": "aiusage-collector",
+  "version": "0.4.0",
+  "description": "Report local ccusage token usage to an aiusage instance",
   "type": "module",
   "bin": {
-    "tokenmax": "./src/cli.ts"
+    "aiusage": "./src/cli.ts"
   },
   "files": [
     "src",
@@ -19,7 +19,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cgaravitoq/tokenmax.git",
+    "url": "git+https://github.com/cgaravitoq/aiusage.git",
     "directory": "packages/collector"
   },
   "engines": {

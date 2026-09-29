@@ -63,7 +63,7 @@ export async function readConfig(
     const message = error instanceof Error ? error.message : String(error);
     return {
       kind: "invalid",
-      message: `could not read tokenmax config at ${configFile}: ${message}`,
+      message: `could not read aiusage config at ${configFile}: ${message}`,
     };
   }
 
@@ -74,7 +74,7 @@ export async function readConfig(
     const message = error instanceof Error ? error.message : String(error);
     return {
       kind: "invalid",
-      message: `could not parse tokenmax config at ${configFile}: ${message}`,
+      message: `could not parse aiusage config at ${configFile}: ${message}`,
     };
   }
 
@@ -82,7 +82,7 @@ export async function readConfig(
   if (!parsed.success) {
     return {
       kind: "invalid",
-      message: `invalid tokenmax config at ${configFile}: ${issueText(parsed.error)}`,
+      message: `invalid aiusage config at ${configFile}: ${issueText(parsed.error)}`,
     };
   }
   return { kind: "ok", config: parsed.data };

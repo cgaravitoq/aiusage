@@ -59,7 +59,7 @@ async function runCollect(io: CliIo): Promise<number> {
   }
   if (result.kind === "missing-config") {
     io.stderr(
-      `no tokenmax config at ${result.configFile}; run: tokenmax install --url <url> --key <key>`,
+      `no aiusage config at ${result.configFile}; run: aiusage install --url <url> --key <key>`,
     );
     return 2;
   }
@@ -97,8 +97,8 @@ async function runInstall(
 export async function runCli(argv: string[], io: CliIo): Promise<number> {
   let exitCode = 0;
   const program = new Command()
-    .name("tokenmax-collector")
-    .description("Report local token usage to a tokenmax instance");
+    .name("aiusage-collector")
+    .description("Report local token usage to an aiusage instance");
 
   program
     .command("collect")
@@ -109,9 +109,9 @@ export async function runCli(argv: string[], io: CliIo): Promise<number> {
 
   program
     .command("install")
-    .description("Write the tokenmax config and the local schedule")
-    .requiredOption("--url <url>", "tokenmax base url")
-    .requiredOption("--key <key>", "tokenmax api key")
+    .description("Write the aiusage config and the local schedule")
+    .requiredOption("--url <url>", "aiusage base url")
+    .requiredOption("--key <key>", "aiusage api key")
     .option("--timezone <zone>", "IANA timezone, defaults to the machine zone")
     .option("--dry-run", "print the files without writing them", false)
     .action(async (options: InstallCommandOptions) => {

@@ -13,8 +13,8 @@ const key = "tmx_test";
 const url = "http://localhost:1";
 
 const expectSchedule = (file: string, content: string): void => {
-  if (basename(file) === "tokenmax.timer") {
-    expect(content).toContain("Unit=tokenmax.service");
+  if (basename(file) === "aiusage.timer") {
+    expect(content).toContain("Unit=aiusage.service");
     expect(content).toContain("OnUnitActiveSec=5min");
     return;
   }
@@ -32,7 +32,7 @@ let home: string;
 const run = (args: string[]): Promise<Run> =>
   new Promise((resolve, reject) => {
     const child = spawn(bun, ["run", cliPath, ...args], {
-      env: { ...process.env, TOKENMAX_HOME: home },
+      env: { ...process.env, AIUSAGE_HOME: home },
       stdio: ["ignore", "pipe", "pipe"],
     });
     const stdout: Buffer[] = [];
@@ -50,7 +50,7 @@ const run = (args: string[]): Promise<Run> =>
   });
 
 beforeEach(async () => {
-  home = await mkdtemp(join(tmpdir(), "tokenmax-e2e-"));
+  home = await mkdtemp(join(tmpdir(), "aiusage-e2e-"));
 });
 
 afterEach(async () => {
@@ -59,12 +59,12 @@ afterEach(async () => {
 
 describe("cli entry", () => {
   it("collect exits 2 and prints the install command without a config", async () => {
-    const paths = collectorPaths({ home, tokenmaxHome: home });
+    const paths = collectorPaths({ home, aiusageHome: home });
     const result = await run(["collect"]);
 
     expect(result).toEqual({
       code: 2,
-      stderr: `no tokenmax config at ${paths.configFile}; run: tokenmax install --url <url> --key <key>\n`,
+      stderr: `no aiusage config at ${paths.configFile}; run: aiusage install --url <url> --key <key>\n`,
       stdout: "",
     });
   });
@@ -84,13 +84,13 @@ describe("cli entry", () => {
     expect(result.stdout).toMatch(
       process.platform === "darwin"
         ? /^load: launchctl bootstrap gui\/\d+ .+\.plist$/m
-        : /^load: systemctl --user enable --now tokenmax\.timer$/m,
+        : /^load: systemctl --user enable --now aiusage\.timer$/m,
     );
     expect(await readdir(home)).toEqual([]);
   });
 
   it("install exits 0 and writes the config and the schedule", async () => {
-    const paths = collectorPaths({ home, tokenmaxHome: home });
+    const paths = collectorPaths({ home, aiusageHome: home });
     const result = await run([
       "install",
       "--url",
@@ -118,7 +118,7 @@ describe("cli entry", () => {
   });
 
   it("install defaults the config timezone to the machine zone", async () => {
-    const paths = collectorPaths({ home, tokenmaxHome: home });
+    const paths = collectorPaths({ home, aiusageHome: home });
     const result = await run(["install", "--url", url, "--key", key]);
 
     expect(result.code).toBe(0);
@@ -128,7 +128,7 @@ describe("cli entry", () => {
   });
 
   it("install stores the canonical spelling of the requested zone", async () => {
-    const paths = collectorPaths({ home, tokenmaxHome: home });
+    const paths = collectorPaths({ home, aiusageHome: home });
     const result = await run([
       "install",
       "--url",
@@ -165,7 +165,7 @@ describe("cli entry", () => {
   });
 
   it("renders every platform schedule to the per-file expectations", () => {
-    const paths = collectorPaths({ home, tokenmaxHome: home });
+    const paths = collectorPaths({ home, aiusageHome: home });
     const options = {
       cliPath,
       execPath: process.execPath,
