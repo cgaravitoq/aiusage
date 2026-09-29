@@ -1,0 +1,435 @@
+{
+  "login": "cgaravitoq",
+  "range": "month",
+  "from": "2026-08-31",
+  "to": "2026-09-29",
+  "timezone": "Europe/Madrid",
+  "totals": {
+    "input": 609366631,
+    "output": 150534472,
+    "cache_create": 350580019,
+    "cache_read": 35762686951,
+    "tokens": 36873168073,
+    "cost_usd": 16902.559248242414
+  },
+  "providers": [
+    {
+      "provider": "claude",
+      "tokens": 21637552794,
+      "cost_usd": 12918.01285395,
+      "models": [
+        {
+          "model": "claude-opus-5",
+          "tokens": 10393240512,
+          "cost_usd": 7523.727993250002
+        },
+        {
+          "model": "claude-opus-5-5",
+          "tokens": 8995459667,
+          "cost_usd": 3373.8984843999983
+        },
+        {
+          "model": "claude-fable-5-1",
+          "tokens": 2238104983,
+          "cost_usd": 1996.791477
+        },
+        {
+          "model": "claude-sonnet-5",
+          "tokens": 4809512,
+          "cost_usd": 16.4704132
+        },
+        {
+          "model": "claude-opus-4-8",
+          "tokens": 3123079,
+          "cost_usd": 4.110605499999999
+        },
+        {
+          "model": "claude-sonnet-5-5",
+          "tokens": 2686379,
+          "cost_usd": 2.8795262000000004
+        },
+        {
+          "model": "claude-haiku-4-5-20251001",
+          "tokens": 128662,
+          "cost_usd": 0.13435439999999998
+        }
+      ]
+    },
+    {
+      "provider": "pi",
+      "tokens": 4475636829,
+      "cost_usd": 72.55312527799998,
+      "models": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "tokens": 3453147932,
+          "cost_usd": 34.94987127600001
+        },
+        {
+          "model": "glm-5.3-flash",
+          "tokens": 698827849,
+          "cost_usd": 28.114904354999982
+        },
+        {
+          "model": "mimo-v2.6-flash",
+          "tokens": 182260586,
+          "cost_usd": 1.8816959000000002
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "tokens": 46894154,
+          "cost_usd": 0.8986609519999997
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "tokens": 32404004,
+          "cost_usd": 1.170563260000001
+        },
+        {
+          "model": "@cf/zai-org/glm-5.3-flash",
+          "tokens": 22442541,
+          "cost_usd": 0
+        },
+        {
+          "model": "space-bunny-free",
+          "tokens": 19483761,
+          "cost_usd": 4.665269429999999
+        },
+        {
+          "model": "deepseek-v4-pro",
+          "tokens": 15674436,
+          "cost_usd": 0.6057752799999999
+        },
+        {
+          "model": "mimo-v2.6-pro",
+          "tokens": 4470935,
+          "cost_usd": 0.21113232499999998
+        },
+        { "model": "qwen3.7-max", "tokens": 30631, "cost_usd": 0.0552525 }
+      ]
+    },
+    {
+      "provider": "codex",
+      "tokens": 4192725796,
+      "cost_usd": 2727.063853279999,
+      "models": [
+        {
+          "model": "gpt-5.6-sol",
+          "tokens": 1813965157,
+          "cost_usd": 1024.3391338
+        },
+        {
+          "model": "gpt-6-sol",
+          "tokens": 1298738467,
+          "cost_usd": 318.84875960000005
+        },
+        {
+          "model": "gpt-6-astra",
+          "tokens": 925152656,
+          "cost_usd": 1350.5041930000004
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "tokens": 84579455,
+          "cost_usd": 2.9171752799999995
+        },
+        { "model": "gpt-5.6-terra", "tokens": 65099785, "cost_usd": 30.32409 },
+        {
+          "model": "gpt-6-luna",
+          "tokens": 5190276,
+          "cost_usd": 0.13050159999999997
+        }
+      ]
+    },
+    {
+      "provider": "antigravity",
+      "tokens": 2803301800,
+      "cost_usd": 469.1670519,
+      "models": [
+        {
+          "model": "gemini-3.8-flash",
+          "tokens": 2794764327,
+          "cost_usd": 464.946692775
+        },
+        {
+          "model": "claude-sonnet-4-6",
+          "tokens": 4856677,
+          "cost_usd": 3.0580728
+        },
+        {
+          "model": "gemini-3.7-flash",
+          "tokens": 2473543,
+          "cost_usd": 1.162286325
+        },
+        {
+          "model": "claude-opus-4-6-thinking",
+          "tokens": 1207253,
+          "cost_usd": 0
+        }
+      ]
+    },
+    {
+      "provider": "devin",
+      "tokens": 1821528362,
+      "cost_usd": 546.0947797499999,
+      "models": [
+        { "model": "deepseek-v4-1-flash", "tokens": 956636174, "cost_usd": 0 },
+        {
+          "model": "claude-fable-5-1",
+          "tokens": 208369860,
+          "cost_usd": 153.66675975
+        },
+        {
+          "model": "gpt-5.6-sol",
+          "tokens": 207901877,
+          "cost_usd": 107.78258919999998
+        },
+        {
+          "model": "claude-opus-5",
+          "tokens": 197365910,
+          "cost_usd": 128.68463400000002
+        },
+        { "model": "gpt-6-astra", "tokens": 83799259, "cost_usd": 130.921431 },
+        { "model": "swe-2", "tokens": 62962591, "cost_usd": 0 },
+        { "model": "gpt-6-sol", "tokens": 55583888, "cost_usd": 13.564309 },
+        {
+          "model": "claude-opus-5-5",
+          "tokens": 25442266,
+          "cost_usd": 11.4750568
+        },
+        { "model": "glm-5-3-flash", "tokens": 17818728, "cost_usd": 0 },
+        { "model": "swe-2-max", "tokens": 5647809, "cost_usd": 0 }
+      ]
+    },
+    {
+      "provider": "grok",
+      "tokens": 1039971411,
+      "cost_usd": 155.79696493600005,
+      "models": [
+        {
+          "model": "grok-4.6-build",
+          "tokens": 1037250482,
+          "cost_usd": 154.26688236000004
+        },
+        {
+          "model": "grok-4.5-build",
+          "tokens": 1935892,
+          "cost_usd": 0.584116576
+        },
+        { "model": "grok-4.7", "tokens": 785037, "cost_usd": 0.945966 }
+      ]
+    },
+    {
+      "provider": "opencode",
+      "tokens": 902451081,
+      "cost_usd": 13.870619148400003,
+      "models": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "tokens": 798839768,
+          "cost_usd": 6.702093288000001
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "tokens": 70204558,
+          "cost_usd": 1.1537074539999999
+        },
+        {
+          "model": "glm-5.3-flash",
+          "tokens": 12603406,
+          "cost_usd": 0.5237942900000001
+        },
+        {
+          "model": "glm-5.3",
+          "tokens": 12466581,
+          "cost_usd": 3.9901668800000016
+        },
+        {
+          "model": "mimo-v2.6-flash",
+          "tokens": 3154468,
+          "cost_usd": 0.11519331040000001
+        },
+        {
+          "model": "muse-spark-1.3-contributor-free",
+          "tokens": 1577062,
+          "cost_usd": 0.032399118000000005
+        },
+        { "model": "union-alpha", "tokens": 1016536, "cost_usd": 0 },
+        {
+          "model": "deepseek-v4-pro",
+          "tokens": 730268,
+          "cost_usd": 0.379676836
+        },
+        {
+          "model": "claude-sonnet-5",
+          "tokens": 670908,
+          "cost_usd": 0.42993609999999993
+        },
+        { "model": "minimax-m3", "tokens": 457914, "cost_usd": 0.13828578 },
+        { "model": "qwen3.8-flash", "tokens": 301773, "cost_usd": 0.029226752 },
+        {
+          "model": "glm-5.2",
+          "tokens": 207576,
+          "cost_usd": 0.17344625999999996
+        },
+        { "model": "gpt-5.6-luna", "tokens": 100882, "cost_usd": 0.01601888 },
+        {
+          "model": "kimi-k2.7-code",
+          "tokens": 43144,
+          "cost_usd": 0.024279750000000003
+        },
+        { "model": "claude-opus-5", "tokens": 42668, "cost_usd": 0.160411 },
+        { "model": "glm5.3-flash", "tokens": 20394, "cost_usd": 0 },
+        { "model": "deepseek-flash", "tokens": 13175, "cost_usd": 0.00198345 }
+      ]
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-08-31",
+      "tokens": 714561921,
+      "cost_usd": 465.29272515000054
+    },
+    {
+      "date": "2026-09-01",
+      "tokens": 668788013,
+      "cost_usd": 399.27359482499935
+    },
+    {
+      "date": "2026-09-02",
+      "tokens": 499110888,
+      "cost_usd": 267.0772754700001
+    },
+    {
+      "date": "2026-09-03",
+      "tokens": 869742165,
+      "cost_usd": 358.7484598199999
+    },
+    {
+      "date": "2026-09-04",
+      "tokens": 1310582950,
+      "cost_usd": 574.2709224639997
+    },
+    {
+      "date": "2026-09-05",
+      "tokens": 163863418,
+      "cost_usd": 131.62680537999995
+    },
+    {
+      "date": "2026-09-06",
+      "tokens": 1436642364,
+      "cost_usd": 1285.3050545140004
+    },
+    {
+      "date": "2026-09-07",
+      "tokens": 913285540,
+      "cost_usd": 694.2394044600004
+    },
+    {
+      "date": "2026-09-08",
+      "tokens": 1101960538,
+      "cost_usd": 723.6235364399998
+    },
+    {
+      "date": "2026-09-09",
+      "tokens": 384971796,
+      "cost_usd": 138.81212541400004
+    },
+    {
+      "date": "2026-09-10",
+      "tokens": 1832597800,
+      "cost_usd": 1307.8065431450007
+    },
+    {
+      "date": "2026-09-11",
+      "tokens": 1680282469,
+      "cost_usd": 1244.106013125001
+    },
+    {
+      "date": "2026-09-12",
+      "tokens": 739750673,
+      "cost_usd": 566.9846763499997
+    },
+    {
+      "date": "2026-09-13",
+      "tokens": 369971684,
+      "cost_usd": 184.35043675100007
+    },
+    {
+      "date": "2026-09-14",
+      "tokens": 930195182,
+      "cost_usd": 482.73055365000073
+    },
+    {
+      "date": "2026-09-15",
+      "tokens": 939905473,
+      "cost_usd": 604.0498830639992
+    },
+    {
+      "date": "2026-09-16",
+      "tokens": 665618124,
+      "cost_usd": 239.19882990899998
+    },
+    {
+      "date": "2026-09-17",
+      "tokens": 645515430,
+      "cost_usd": 64.17848209899998
+    },
+    {
+      "date": "2026-09-18",
+      "tokens": 631584229,
+      "cost_usd": 334.1823706770001
+    },
+    {
+      "date": "2026-09-19",
+      "tokens": 1618832809,
+      "cost_usd": 972.0530779950001
+    },
+    { "date": "2026-09-20", "tokens": 271979176, "cost_usd": 179.6266172 },
+    {
+      "date": "2026-09-21",
+      "tokens": 406025044,
+      "cost_usd": 234.08397696000003
+    },
+    {
+      "date": "2026-09-22",
+      "tokens": 1759395964,
+      "cost_usd": 768.4826535616006
+    },
+    {
+      "date": "2026-09-23",
+      "tokens": 3705771796,
+      "cost_usd": 923.5357475626023
+    },
+    {
+      "date": "2026-09-24",
+      "tokens": 2249566995,
+      "cost_usd": 797.9597798871999
+    },
+    {
+      "date": "2026-09-25",
+      "tokens": 3422367518,
+      "cost_usd": 1079.5932123099979
+    },
+    {
+      "date": "2026-09-26",
+      "tokens": 1740800874,
+      "cost_usd": 666.7964515749992
+    },
+    {
+      "date": "2026-09-27",
+      "tokens": 1816624478,
+      "cost_usd": 444.94205502000005
+    },
+    {
+      "date": "2026-09-28",
+      "tokens": 1907421361,
+      "cost_usd": 433.88409936999966
+    },
+    {
+      "date": "2026-09-29",
+      "tokens": 1475451401,
+      "cost_usd": 335.7438840939996
+    }
+  ]
+}
