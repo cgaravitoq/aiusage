@@ -3,8 +3,8 @@ import type { UsageSummary } from "./summary";
 
 export const dotCount = 8;
 
-export function compactTokens(locale: WidgetLocale): Intl.NumberFormat {
-  return new Intl.NumberFormat(locale, {
+export function compactTokens(): Intl.NumberFormat {
+  return new Intl.NumberFormat("en", {
     notation: "compact",
     maximumFractionDigits: 1,
   });

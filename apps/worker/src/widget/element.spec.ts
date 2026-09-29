@@ -198,7 +198,7 @@ describe("aiusage-island", () => {
 
     expect(island.getAttribute("aria-label")).toBe("Uso de tokens");
     expect(labels(root)).toEqual(["Día", "Semana", "Mes"]);
-    expect(query(root, ".total:not([hidden])").textContent).toMatch(/^16,3/);
+    expect(query(root, ".total:not([hidden])").textContent).toBe("16.3B");
     expect(query(root, ".usage").textContent).toContain("US$");
     expect(query(root, ".powered").textContent).toBe(
       "con tecnología de aiusage",

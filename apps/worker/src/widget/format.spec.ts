@@ -4,10 +4,10 @@ import type { UsageSummary } from "./summary";
 import { fixture } from "./test/fixture";
 
 describe("token and cost formatting", () => {
-  it("formats compact tokens per locale", () => {
+  it("formats compact tokens in English whatever the locale", () => {
     const week = fixture("week");
-    expect(compactTokens("en").format(week.totals.tokens)).toBe("16.3B");
-    expect(compactTokens("es").format(week.totals.tokens)).toMatch(/^16,3/);
+    expect(compactTokens().format(week.totals.tokens)).toBe("16.3B");
+    expect(compactTokens().format(1_758_100_000)).toBe("1.8B");
   });
 
   it("formats the API-equivalent cost in dollars per locale", () => {
