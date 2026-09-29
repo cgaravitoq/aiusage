@@ -71,7 +71,7 @@ describe("GET /keys", () => {
       Cookie: `aiusage_new_key=${key}; aiusage_new_login=octocat`,
     });
 
-    expect(html).toContain("bun add -g aiusage-collector");
+    expect(html).toContain("bun add -g @cgaravitoq/aiusage");
     expect(html).toContain(`aiusage install --url ${origin} --key ${key}`);
     expect(html).toContain(
       `&lt;script src=&quot;${origin}/widget/v1.js&quot; defer&gt;&lt;/script&gt;`,
