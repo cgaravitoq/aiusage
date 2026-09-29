@@ -1,4 +1,4 @@
-# aiusage-collector
+# @cgaravitoq/aiusage
 
 Report local token usage to an [aiusage](https://github.com/cgaravitoq/aiusage) instance.
 
@@ -8,7 +8,7 @@ Windows is unsupported, and npm refuses the install there.
 ## Install
 
 ```bash
-bun add -g aiusage-collector
+bun add -g @cgaravitoq/aiusage
 aiusage install --url <url> --key <key>
 ```
 
@@ -30,7 +30,7 @@ Both are priced from the LiteLLM table cached for a day at `~/.config/aiusage/li
 ## Upgrade
 
 ```bash
-bun add -g aiusage-collector@latest
+bun add -g @cgaravitoq/aiusage@latest
 aiusage install --url <url> --key <existing-key>
 ```
 

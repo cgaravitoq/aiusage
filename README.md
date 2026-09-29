@@ -21,7 +21,7 @@ A Cloudflare account, Bun 1.4.0 and `bunx wrangler login`.
 5. From `apps/worker`, run `bunx wrangler d1 migrations apply DB --remote`.
 6. Run `bun run build` from the root, then deploy by pushing to `main` with the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, or with `bunx wrangler deploy` from `apps/worker`.
 7. Sign in at `/auth/github` and copy the key shown once at `/keys`.
-8. Install the collector with `bun add -g aiusage-collector`, run `aiusage install --url <url> --key <key>`, then run the command printed after `load:` to activate collection on macOS or Linux.
+8. Install the collector with `bun add -g @cgaravitoq/aiusage`, run `aiusage install --url <url> --key <key>`, then run the command printed after `load:` to activate collection on macOS or Linux.
 
 ### Local development
 
@@ -63,7 +63,7 @@ Windows is unsupported.
 Install it globally and create the local schedule:
 
 ```bash
-bun add -g aiusage-collector
+bun add -g @cgaravitoq/aiusage
 aiusage install --url <url> --key <key>
 ```
 
@@ -80,7 +80,7 @@ A collector release is a version bump merged to `main` followed by a `collector-
 To upgrade, reinstall the latest package and regenerate the schedule with the existing key:
 
 ```bash
-bun add -g aiusage-collector@latest
+bun add -g @cgaravitoq/aiusage@latest
 aiusage install --url <url> --key <existing-key>
 ```
 
