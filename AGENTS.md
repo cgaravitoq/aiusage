@@ -85,4 +85,4 @@ Upgrade and schedule commands are in `README.md`.
 Sign in at `/auth/github` to get a key, shown once at `/keys`.
 Every sign-in revokes every existing key.
 `POST /api/keys/rotate` with the bearer key returns a fresh one.
-The schedule runs the installed Bun with `cli.ts collect` every five minutes.
+The schedule runs the installed Bun with `cli.ts collect` every fifteen minutes.

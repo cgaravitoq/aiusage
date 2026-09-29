@@ -12,7 +12,7 @@ bun add -g @cgaravitoq/aiusage
 aiusage install --url <url> --key <key>
 ```
 
-`install` writes `~/.config/aiusage/config.json` with mode 600 and a launchd agent on macOS or a systemd user timer on Linux that runs `aiusage collect` every five minutes.
+`install` writes `~/.config/aiusage/config.json` with mode 600 and a launchd agent on macOS or a systemd user timer on Linux that runs `aiusage collect` every fifteen minutes.
 Pass `--timezone <zone>` to override the machine's IANA timezone, or `--dry-run` to print the files without writing them.
 Non-dry `install` refuses Bun paths containing `/install/cache/` or a `bunx-<digits>-<package>` directory segment, because those paths can disappear while a schedule still points to them.
 
