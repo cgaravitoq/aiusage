@@ -15,7 +15,7 @@ const url = "http://localhost:1";
 const expectSchedule = (file: string, content: string): void => {
   if (basename(file) === "aiusage.timer") {
     expect(content).toContain("Unit=aiusage.service");
-    expect(content).toContain("OnUnitActiveSec=5min");
+    expect(content).toContain("OnUnitActiveSec=15min");
     return;
   }
   expect(content).toContain(cliPath);

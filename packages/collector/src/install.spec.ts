@@ -44,7 +44,7 @@ const plistFor = (
     <string>collect</string>
   </array>
   <key>StartInterval</key>
-  <integer>300</integer>
+  <integer>900</integer>
   <key>RunAtLoad</key>
   <true/>
   <key>StandardOutPath</key>
@@ -64,12 +64,12 @@ ExecStart="${execPath}" "${cliPath}" collect
 `;
 
 const timerFor = (): string => `[Unit]
-Description=Report local token usage to aiusage every five minutes
+Description=Report local token usage to aiusage every fifteen minutes
 
 [Timer]
 Unit=aiusage.service
 OnBootSec=1min
-OnUnitActiveSec=5min
+OnUnitActiveSec=15min
 
 [Install]
 WantedBy=timers.target

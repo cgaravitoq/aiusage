@@ -39,7 +39,7 @@ export function launchAgentPlist(options: ScheduleOptions): string {
     <string>collect</string>
   </array>
   <key>StartInterval</key>
-  <integer>300</integer>
+  <integer>900</integer>
   <key>RunAtLoad</key>
   <true/>
   <key>StandardOutPath</key>
@@ -63,12 +63,12 @@ ExecStart="${escapeSystemd(options.execPath)}" "${escapeSystemd(options.cliPath)
 
 export function systemdTimer(): string {
   return `[Unit]
-Description=Report local token usage to aiusage every five minutes
+Description=Report local token usage to aiusage every fifteen minutes
 
 [Timer]
 Unit=aiusage.service
 OnBootSec=1min
-OnUnitActiveSec=5min
+OnUnitActiveSec=15min
 
 [Install]
 WantedBy=timers.target
