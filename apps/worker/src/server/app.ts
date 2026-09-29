@@ -21,6 +21,7 @@ const maxReportBytes = 1024 * 1024;
 
 const oauthStateCookie = "tokenmax_oauth_state";
 const newKeyCookie = "tokenmax_new_key";
+const newLoginCookie = "tokenmax_new_login";
 
 const authorizeEndpoint = "https://github.com/login/oauth/authorize";
 const exchangeEndpoint = "https://github.com/login/oauth/access_token";
@@ -186,6 +187,13 @@ app.get("/auth/github/callback", async (context) => {
     await hashApiKey(key),
   );
   setCookie(context, newKeyCookie, key, {
+    path: "/keys",
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+    maxAge: 60,
+  });
+  setCookie(context, newLoginCookie, user.data.login.toLowerCase(), {
     path: "/keys",
     httpOnly: true,
     secure: true,

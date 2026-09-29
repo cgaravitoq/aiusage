@@ -8,20 +8,60 @@ beforeAll(async () => {
   container = await AstroContainer.create();
 });
 
-describe("GET /", () => {
-  it("links the privacy notice and documents the key revocation", async () => {
-    const response = await container.renderToResponse(IndexPage, {
-      request: new Request("http://tokenmax.test/"),
-    });
-    const html = await response.text();
+async function render(origin: string): Promise<string> {
+  const response = await container.renderToResponse(IndexPage, {
+    request: new Request(`${origin}/`),
+  });
+  return response.text();
+}
 
-    expect(html).toContain('href="/privacy"');
-    expect(html).toContain("revokes every existing key");
+describe("GET /", () => {
+  it("renders the four setup steps with the request origin", async () => {
+    const origin = "http://tokenmax.test";
+    const html = await render(origin);
+
+    expect(html.split("<li>")).toHaveLength(5);
+    expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
+    expect(html).toContain("<h2>Copy the key</h2>");
+    expect(html).toContain("<h2>Install the collector</h2>");
+    expect(html).toContain("<h2>Embed the widget</h2>");
+    expect(html).toContain("bun add -g tokenmax-collector");
     expect(html).toContain(
-      "reinstall the collector with the new key by running:",
+      `tokenmax install --url ${origin} --key &lt;key&gt;</code>`,
     );
     expect(html).toContain(
-      "tokenmax install --url http://tokenmax.test --key &lt;key&gt;</code>",
+      `&lt;script src=&quot;${origin}/widget/v1.js&quot; defer&gt;&lt;/script&gt;`,
+    );
+    expect(html).toContain(
+      "&lt;tokenmax-island login=&quot;&lt;login&gt;&quot;&gt;&lt;/tokenmax-island&gt;",
+    );
+    expect(html).toContain(
+      `${origin}</code> in <code>script-src</code> and <code>connect-src</code>`,
+    );
+    expect(html).toContain("revokes every existing key");
+    expect(html).toContain('href="/privacy"');
+  });
+
+  it("takes the origin from the request instead of a fixed host", async () => {
+    const html = await render("https://tokens.example");
+
+    expect(html).toContain(
+      "tokenmax install --url https://tokens.example --key &lt;key&gt;",
+    );
+    expect(html).toContain(
+      "&lt;script src=&quot;https://tokens.example/widget/v1.js&quot;",
+    );
+    expect(html).not.toContain("tokenmax.test");
+  });
+
+  it("loads the widget for cgaravitoq as the live demo", async () => {
+    const html = await render("http://tokenmax.test");
+
+    expect(html).toContain(
+      '<script src="http://tokenmax.test/widget/v1.js" defer></script>',
+    );
+    expect(html).toContain(
+      '<tokenmax-island login="cgaravitoq"></tokenmax-island>',
     );
   });
 });
