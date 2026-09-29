@@ -16,7 +16,8 @@ A Cloudflare account, Bun 1.4.0 and `bunx wrangler login`.
 
 1. Run `git clone https://github.com/cgaravitoq/aiusage.git`, change into the checkout with `cd aiusage`, then run `bun install`.
 2. From `apps/worker`, run `bunx wrangler d1 create aiusage`, then replace `d1_databases[0].database_id` in `apps/worker/wrangler.jsonc` with the returned id.
-3. Create a GitHub OAuth app whose callback URL is `https://<worker>.workers.dev/auth/github/callback`.
+3. Point `routes[0].pattern` in `apps/worker/wrangler.jsonc` at the domain you serve, and create a GitHub OAuth app whose callback URL is `https://<domain>/auth/github/callback`.
+   `workers_dev` and `preview_urls` are off, so the worker answers on that domain alone.
 4. Set the six secrets with `bunx wrangler secret put`: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `PRIVACY_CONTROLLER`, `PRIVACY_EMAIL`, `PRIVACY_AUTHORITY_NAME` and `PRIVACY_AUTHORITY_URL`.
 5. From `apps/worker`, run `bunx wrangler d1 migrations apply DB --remote`.
 6. Run `bun run build` from the root, then deploy by pushing to `main` with the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, or with `bunx wrangler deploy` from `apps/worker`.
