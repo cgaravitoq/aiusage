@@ -52,6 +52,8 @@ It resolves its language from `lang`, then from the closest `[lang]` on the page
 It reads the API from the origin of the script's own `src`, so a self-hosted instance reports its own summaries without configuration, and its expanded panel ends with a "powered by aiusage" link to that same origin.
 The chosen range is remembered in `localStorage` under `aiusage-island-range`, Escape and a click outside the island close it, and it hides while the reader scrolls up.
 It is drawn in a shadow root with the stylesheet adopted, so a page's own CSS never reaches it.
+A strict Content-Security-Policy needs the instance origin in `script-src` and `connect-src`.
+The bundle is about 10 KB minified.
 
 `bun run build` bundles `apps/worker/src/widget` into the gitignored `apps/worker/public/widget/v1.js`, which `apps/worker/public/_headers` serves with `Cache-Control: public, max-age=3600`.
 A page therefore keeps the build it first loaded for up to an hour, and a change to the widget within `v1` reaches it after that.
