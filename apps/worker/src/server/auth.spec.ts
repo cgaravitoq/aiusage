@@ -480,6 +480,14 @@ describe("GET /auth/github/callback", () => {
       "SameSite=Lax",
     ]);
     expect(key).toMatch(/^tmx_[0-9a-f]{64}$/);
+    const login = expectCookie(response, "tokenmax_new_login", [
+      "Max-Age=60",
+      "Path=/keys",
+      "HttpOnly",
+      "Secure",
+      "SameSite=Lax",
+    ]);
+    expect(login).toBe("octocat");
     expect(requests).toEqual([
       exchangeRequest("the-code"),
       profileRequest(githubToken),
@@ -510,6 +518,7 @@ describe("GET /auth/github/callback", () => {
     expect(sqlite.query("SELECT github_login FROM users")).toEqual([
       { github_login: "octocat" },
     ]);
+    expect(cookieValue(response, "tokenmax_new_login")).toBe("octocat");
   });
 
   it("writes the user, the revocation and the new key in one batch", async () => {
