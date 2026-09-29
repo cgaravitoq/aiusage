@@ -16,7 +16,8 @@ A Cloudflare account, Bun 1.4.0 and `bunx wrangler login`.
 
 1. Run `git clone https://github.com/cgaravitoq/aiusage.git`, change into the checkout with `cd aiusage`, then run `bun install`.
 2. From `apps/worker`, run `bunx wrangler d1 create aiusage`, then replace `d1_databases[0].database_id` in `apps/worker/wrangler.jsonc` with the returned id.
-3. Create a GitHub OAuth app whose callback URL is `https://<worker>.workers.dev/auth/github/callback`.
+3. Point `routes[0].pattern` in `apps/worker/wrangler.jsonc` at the domain you serve, and create a GitHub OAuth app whose callback URL is `https://<domain>/auth/github/callback`.
+   `workers_dev` and `preview_urls` are off, so the worker answers on that domain alone.
 4. Set the six secrets with `bunx wrangler secret put`: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `PRIVACY_CONTROLLER`, `PRIVACY_EMAIL`, `PRIVACY_AUTHORITY_NAME` and `PRIVACY_AUTHORITY_URL`.
 5. From `apps/worker`, run `bunx wrangler d1 migrations apply DB --remote`.
 6. Run `bun run build` from the root, then deploy by pushing to `main` with the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, or with `bunx wrangler deploy` from `apps/worker`.
@@ -51,6 +52,8 @@ It resolves its language from `lang`, then from the closest `[lang]` on the page
 It reads the API from the origin of the script's own `src`, so a self-hosted instance reports its own summaries without configuration, and its expanded panel ends with a "powered by aiusage" link to that same origin.
 The chosen range is remembered in `localStorage` under `aiusage-island-range`, Escape and a click outside the island close it, and it hides while the reader scrolls up.
 It is drawn in a shadow root with the stylesheet adopted, so a page's own CSS never reaches it.
+A strict Content-Security-Policy needs the instance origin in `script-src` and `connect-src`.
+The bundle is about 10 KB minified.
 
 `bun run build` bundles `apps/worker/src/widget` into the gitignored `apps/worker/public/widget/v1.js`, which `apps/worker/public/_headers` serves with `Cache-Control: public, max-age=3600`.
 A page therefore keeps the build it first loaded for up to an hour, and a change to the widget within `v1` reaches it after that.
@@ -86,3 +89,9 @@ aiusage install --url <url> --key <existing-key>
 
 On macOS, run `launchctl bootout gui/<uid>/dev.aiusage.collector`, then run the printed `launchctl bootstrap` command.
 On Linux, run `systemctl --user daemon-reload`, then run the printed `systemctl --user enable --now aiusage.timer` command.
+
+## Cost
+
+A collector's report writes about one row to D1 when nothing changed: the machine's last-seen stamp.
+Each run posts the whole 14-day window, and the worker skips a usage row that already holds the reported numbers, so only a row whose numbers moved costs another write.
+The schedule reports every fifteen minutes.

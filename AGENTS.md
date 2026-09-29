@@ -16,7 +16,7 @@ aiusage/
 
 - Bun 1.4.0 workspaces (`apps/*` and `packages/*`), no Turbo.
 - TypeScript 6 in strict mode, with Node 24.19.0 declared in `engines.node`.
-- Biome 2.5 formats and lints, and oxlint 1.82 with the ultracite anti-slop preset is the second linter.
+- Biome 2.5 formats and lints, and oxlint 1.83 with the ultracite anti-slop preset is the second linter.
 - Vitest 4.1 runs the workspace specs, and `bun test` runs the dependency policy and workflow golden tests under `scripts/`.
 - The collector spawns ccusage 20.0.20, pinned exact because it reads an undocumented JSON shape through a per-platform native binary.
 - The collector also decodes the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations` itself, because ccusage has no adapter for them: each model step is a protobuf in SQLite, read through `node:sqlite`, priced from the LiteLLM table cached for a day at `~/.config/aiusage/litellm-prices.json`, and reported as the `antigravity` provider.
@@ -36,7 +36,7 @@ aiusage/
 bun run format                 # biome check . --files-ignore-unknown=true
 bun run format:fix             # biome check . --write --files-ignore-unknown=true
 bun run lint:slop              # oxlint -c oxlint.config.mts --deny-warnings
-bun run check-types            # astro check in apps/worker, tsc --noEmit in packages/collector
+bun run check-types            # astro check and the widget tsc in apps/worker, tsc --noEmit in packages/collector
 bun run test                   # vitest run in every workspace
 bun run test:watch
 bun run test:dependency-policy # bun test scripts/
@@ -56,7 +56,7 @@ bun run build                  # astro build in apps/worker
 
 ## Worker
 
-The worker is `apps/worker`, package `@aiusage/worker`: Astro 7 with the Cloudflare adapter, a Hono 4 API under `src/server`, one Vue 3 island on `/keys` and D1 for storage.
+The worker is `apps/worker`, package `@aiusage/worker`: Astro 7 with the Cloudflare adapter, a Hono 4 API under `src/server`, two Vue 3 islands on `/keys` and `/` and D1 for storage.
 `bun run build` builds it from the root and `bun run dev` serves it with `astro dev`.
 Bindings come from `apps/worker/wrangler.jsonc` and are typed by `bunx wrangler types` into `worker-configuration.d.ts`, which is generated and never hand-edited; the six plain secrets are typed by hand in `src/env.d.ts` and set locally through `apps/worker/.dev.vars`.
 The privacy page renders the four `PRIVACY_*` secrets, so every instance carries its own controller identity.
@@ -64,6 +64,7 @@ The worker also serves `<aiusage-island>` at `/widget/v1.js` from `apps/worker/s
 `bun run build` bundles `src/widget/index.ts` into the gitignored `apps/worker/public/widget/v1.js` with `bun build` before `astro build` copies `public/` into the adapter's client directory, and `apps/worker/public/_headers` gives that path `Cache-Control: public, max-age=3600`.
 The widget is browser code, so `apps/worker/src/widget/tsconfig.json` checks it against the DOM lib with `tsc --noEmit` and `apps/worker/tsconfig.json` excludes that directory, because the workerd globals in `worker-configuration.d.ts` shadow `Element.append`.
 `bunx wrangler d1 migrations apply DB --remote` applies the migrations from `apps/worker`, and `bunx wrangler deploy --dry-run` checks a build without touching Cloudflare.
+The worker answers on `aiusage.cgaravito.dev` through `routes[0]` with `workers_dev` and `preview_urls` off, and the `deploy` job smoke-tests `https://aiusage.cgaravito.dev/api/health` after shipping it.
 `GET /api/u/:login/summary?range=day|week|month` is the public contract: `login`, `range`, `from`, `to`, `timezone`, `totals`, `providers` and `days`, served with `Cache-Control: public, s-maxage=300`.
 `range` selects a 1-, 7- or 30-day window ending today in the timezone of the user's most recently seen machine, and the collector reports only the last 14 calendar days on each run, so a longer window returns the rows earlier reports left in the store and not a full 30 days of collection.
 
