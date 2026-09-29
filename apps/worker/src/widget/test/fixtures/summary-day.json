@@ -1,0 +1,87 @@
+{
+  "login": "cgaravitoq",
+  "range": "day",
+  "from": "2026-09-29",
+  "to": "2026-09-29",
+  "timezone": "Europe/Madrid",
+  "totals": {
+    "input": 14499086,
+    "output": 5807735,
+    "cache_create": 13351388,
+    "cache_read": 1441793192,
+    "tokens": 1475451401,
+    "cost_usd": 335.7438840939996
+  },
+  "providers": [
+    {
+      "provider": "claude",
+      "tokens": 720802070,
+      "cost_usd": 288.7006472999996,
+      "models": [
+        {
+          "model": "claude-opus-5-5",
+          "tokens": 701119023,
+          "cost_usd": 256.2231705999996
+        },
+        {
+          "model": "claude-fable-5-1",
+          "tokens": 16996668,
+          "cost_usd": 29.5979505
+        },
+        {
+          "model": "claude-sonnet-5-5",
+          "tokens": 2686379,
+          "cost_usd": 2.8795262000000004
+        }
+      ]
+    },
+    {
+      "provider": "pi",
+      "tokens": 530950084,
+      "cost_usd": 4.776351293999999,
+      "models": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "tokens": 530950084,
+          "cost_usd": 4.776351293999999
+        }
+      ]
+    },
+    {
+      "provider": "devin",
+      "tokens": 214085794,
+      "cost_usd": 35.2015283,
+      "models": [
+        { "model": "deepseek-v4-1-flash", "tokens": 123574634, "cost_usd": 0 },
+        { "model": "gpt-6-sol", "tokens": 55583888, "cost_usd": 13.564309 },
+        {
+          "model": "claude-opus-5-5",
+          "tokens": 25442266,
+          "cost_usd": 11.4750568
+        },
+        {
+          "model": "gpt-6-astra",
+          "tokens": 6264882,
+          "cost_usd": 10.162162499999999
+        },
+        { "model": "swe-2", "tokens": 3220124, "cost_usd": 0 }
+      ]
+    },
+    {
+      "provider": "codex",
+      "tokens": 9613453,
+      "cost_usd": 7.0653572,
+      "models": [
+        { "model": "gpt-5.6-sol", "tokens": 8285260, "cost_usd": 4.3762752 },
+        { "model": "gpt-6-astra", "tokens": 1328193, "cost_usd": 2.689082 }
+      ]
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-09-29",
+      "tokens": 1475451401,
+      "cost_usd": 335.7438840939996
+    }
+  ]
+}

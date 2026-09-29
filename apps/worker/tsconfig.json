@@ -1,7 +1,9 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  // src/widget is browser code checked against the DOM lib by its own tsconfig,
+  // because the workerd globals of worker-configuration.d.ts shadow Element.append.
+  "exclude": ["dist", "public", "src/widget"],
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]

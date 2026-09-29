@@ -1,0 +1,201 @@
+{
+  "login": "cgaravitoq",
+  "range": "week",
+  "from": "2026-09-23",
+  "to": "2026-09-29",
+  "timezone": "Europe/Madrid",
+  "totals": {
+    "input": 245935290,
+    "output": 69363887,
+    "cache_create": 133321838,
+    "cache_read": 15869383408,
+    "tokens": 16318004423,
+    "cost_usd": 4682.455229818797
+  },
+  "providers": [
+    {
+      "provider": "claude",
+      "tokens": 9409036357,
+      "cost_usd": 3882.0296012499984,
+      "models": [
+        {
+          "model": "claude-opus-5-5",
+          "tokens": 8859775160,
+          "cost_usd": 3324.0741251999984
+        },
+        {
+          "model": "claude-fable-5-1",
+          "tokens": 486439997,
+          "cost_usd": 509.93222375000033
+        },
+        {
+          "model": "claude-opus-5",
+          "tokens": 58618775,
+          "cost_usd": 39.717429499999994
+        },
+        {
+          "model": "claude-sonnet-5-5",
+          "tokens": 2686379,
+          "cost_usd": 2.8795262000000004
+        },
+        {
+          "model": "claude-sonnet-5",
+          "tokens": 1516046,
+          "cost_usd": 5.426296600000001
+        }
+      ]
+    },
+    {
+      "provider": "pi",
+      "tokens": 3381536309,
+      "cost_usd": 55.94499715379999,
+      "models": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "tokens": 2591303228,
+          "cost_usd": 25.65630642600001
+        },
+        {
+          "model": "glm-5.3-flash",
+          "tokens": 615452299,
+          "cost_usd": 24.21940656999998
+        },
+        {
+          "model": "mimo-v2.6-flash",
+          "tokens": 128383063,
+          "cost_usd": 1.1928087528000002
+        },
+        {
+          "model": "@cf/zai-org/glm-5.3-flash",
+          "tokens": 22442541,
+          "cost_usd": 0
+        },
+        {
+          "model": "space-bunny-free",
+          "tokens": 19483761,
+          "cost_usd": 4.665269429999999
+        },
+        {
+          "model": "mimo-v2.6-pro",
+          "tokens": 4470935,
+          "cost_usd": 0.21113232499999998
+        },
+        { "model": "deepseek-v4-flash", "tokens": 482, "cost_usd": 0.00007365 }
+      ]
+    },
+    {
+      "provider": "codex",
+      "tokens": 1684512997,
+      "cost_usd": 551.00943384,
+      "models": [
+        {
+          "model": "gpt-6-sol",
+          "tokens": 1269317686,
+          "cost_usd": 311.98118480000005
+        },
+        {
+          "model": "gpt-5.6-sol",
+          "tokens": 390372375,
+          "cost_usd": 204.3590168
+        },
+        { "model": "gpt-6-astra", "tokens": 17961457, "cost_usd": 34.47953 },
+        {
+          "model": "gpt-6-luna",
+          "tokens": 5190276,
+          "cost_usd": 0.13050159999999997
+        },
+        { "model": "gpt-5.6-luna", "tokens": 1671203, "cost_usd": 0.05920064 }
+      ]
+    },
+    {
+      "provider": "devin",
+      "tokens": 1150834289,
+      "cost_usd": 51.369674700000004,
+      "models": [
+        { "model": "deepseek-v4-1-flash", "tokens": 956636174, "cost_usd": 0 },
+        { "model": "swe-2", "tokens": 58708451, "cost_usd": 0 },
+        { "model": "gpt-6-sol", "tokens": 55583888, "cost_usd": 13.564309 },
+        { "model": "gpt-5.6-sol", "tokens": 30330843, "cost_usd": 16.1681464 },
+        {
+          "model": "claude-opus-5-5",
+          "tokens": 25442266,
+          "cost_usd": 11.4750568
+        },
+        { "model": "glm-5-3-flash", "tokens": 17818728, "cost_usd": 0 },
+        {
+          "model": "gpt-6-astra",
+          "tokens": 6264882,
+          "cost_usd": 10.162162499999999
+        },
+        { "model": "swe-2-max", "tokens": 49057, "cost_usd": 0 }
+      ]
+    },
+    {
+      "provider": "antigravity",
+      "tokens": 667052288,
+      "cost_usd": 135.242030475,
+      "models": [
+        {
+          "model": "gemini-3.8-flash",
+          "tokens": 660988358,
+          "cost_usd": 132.183957675
+        },
+        {
+          "model": "claude-sonnet-4-6",
+          "tokens": 4856677,
+          "cost_usd": 3.0580728
+        },
+        {
+          "model": "claude-opus-4-6-thinking",
+          "tokens": 1207253,
+          "cost_usd": 0
+        }
+      ]
+    },
+    {
+      "provider": "grok",
+      "tokens": 25032183,
+      "cost_usd": 6.8594924,
+      "models": [
+        { "model": "grok-4.6-build", "tokens": 25032183, "cost_usd": 6.8594924 }
+      ]
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-09-23",
+      "tokens": 3705771796,
+      "cost_usd": 923.5357475626023
+    },
+    {
+      "date": "2026-09-24",
+      "tokens": 2249566995,
+      "cost_usd": 797.9597798871999
+    },
+    {
+      "date": "2026-09-25",
+      "tokens": 3422367518,
+      "cost_usd": 1079.5932123099979
+    },
+    {
+      "date": "2026-09-26",
+      "tokens": 1740800874,
+      "cost_usd": 666.7964515749992
+    },
+    {
+      "date": "2026-09-27",
+      "tokens": 1816624478,
+      "cost_usd": 444.94205502000005
+    },
+    {
+      "date": "2026-09-28",
+      "tokens": 1907421361,
+      "cost_usd": 433.88409936999966
+    },
+    {
+      "date": "2026-09-29",
+      "tokens": 1475451401,
+      "cost_usd": 335.7438840939996
+    }
+  ]
+}

@@ -35,6 +35,26 @@ The callback is derived from the request origin, so no other configuration is ne
 Providers and models rank by tokens descending then name, days ascend, and errors are `400 {"error":"invalid range"}` and `404 {"error":"unknown user"}`.
 Every response of that route, the errors included, carries `Access-Control-Allow-Origin: *` so a page on any origin can read it from a browser, the request is a simple GET that needs no preflight, and no other route is cross-origin readable.
 
+## Embed
+
+`<tokenmax-island>` is a dependency-free web component that renders one login's public summary as the island hanging from the top edge of the page.
+The Worker serves it at `/widget/v1.js`, so an instance that hosts the widget needs nothing else.
+
+```html
+<script src="https://tokenmax.carlos-garavito.workers.dev/widget/v1.js" defer></script>
+<tokenmax-island login="jane"></tokenmax-island>
+```
+
+`login` is required and `lang` is optional.
+The island asks for the day, week and month ranges at once, shows the last eight days as its dot grid, and renders nothing at all when every one of those requests fails.
+It resolves its language from `lang`, then from the closest `[lang]` on the page, then from `navigator.language`, and reads any `es*` tag as Spanish.
+It reads the API from the origin of the script's own `src`, so a self-hosted instance reports its own summaries without configuration, and its expanded panel ends with a "powered by tokenmax" link to that same origin.
+The chosen range is remembered in `localStorage` under `tokenmax-island-range`, Escape and a click outside the island close it, and it hides while the reader scrolls up.
+It is drawn in a shadow root with the stylesheet adopted, so a page's own CSS never reaches it.
+
+`bun run build` bundles `apps/worker/src/widget` into the gitignored `apps/worker/public/widget/v1.js`, which `apps/worker/public/_headers` serves with `Cache-Control: public, max-age=3600`.
+A page therefore keeps the build it first loaded for up to an hour, and a change to the widget within `v1` reaches it after that.
+
 ## Collector
 
 The collector requires Bun 1.4.0 or newer, which ships `node:sqlite`, and supports macOS and Linux.
