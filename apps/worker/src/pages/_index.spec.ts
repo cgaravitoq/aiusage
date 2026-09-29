@@ -17,7 +17,7 @@ async function render(origin: string): Promise<string> {
 
 describe("GET /", () => {
   it("renders the four setup steps with the request origin", async () => {
-    const origin = "http://tokenmax.test";
+    const origin = "http://aiusage.test";
     const html = await render(origin);
 
     expect(html.split("<li>")).toHaveLength(5);
@@ -25,15 +25,15 @@ describe("GET /", () => {
     expect(html).toContain("<h2>Copy the key</h2>");
     expect(html).toContain("<h2>Install the collector</h2>");
     expect(html).toContain("<h2>Embed the widget</h2>");
-    expect(html).toContain("bun add -g tokenmax-collector");
+    expect(html).toContain("bun add -g aiusage-collector");
     expect(html).toContain(
-      `tokenmax install --url ${origin} --key &lt;key&gt;</code>`,
+      `aiusage install --url ${origin} --key &lt;key&gt;</code>`,
     );
     expect(html).toContain(
       `&lt;script src=&quot;${origin}/widget/v1.js&quot; defer&gt;&lt;/script&gt;`,
     );
     expect(html).toContain(
-      "&lt;tokenmax-island login=&quot;&lt;login&gt;&quot;&gt;&lt;/tokenmax-island&gt;",
+      "&lt;aiusage-island login=&quot;&lt;login&gt;&quot;&gt;&lt;/aiusage-island&gt;",
     );
     expect(html).toContain(
       `${origin}</code> in <code>script-src</code> and <code>connect-src</code>`,
@@ -46,22 +46,22 @@ describe("GET /", () => {
     const html = await render("https://tokens.example");
 
     expect(html).toContain(
-      "tokenmax install --url https://tokens.example --key &lt;key&gt;",
+      "aiusage install --url https://tokens.example --key &lt;key&gt;",
     );
     expect(html).toContain(
       "&lt;script src=&quot;https://tokens.example/widget/v1.js&quot;",
     );
-    expect(html).not.toContain("tokenmax.test");
+    expect(html).not.toContain("aiusage.test");
   });
 
   it("loads the widget for cgaravitoq as the live demo", async () => {
-    const html = await render("http://tokenmax.test");
+    const html = await render("http://aiusage.test");
 
     expect(html).toContain(
-      '<script src="http://tokenmax.test/widget/v1.js" defer></script>',
+      '<script src="http://aiusage.test/widget/v1.js" defer></script>',
     );
     expect(html).toContain(
-      '<tokenmax-island login="cgaravitoq"></tokenmax-island>',
+      '<aiusage-island login="cgaravitoq"></aiusage-island>',
     );
   });
 });

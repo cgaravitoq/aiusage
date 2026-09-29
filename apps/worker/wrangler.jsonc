@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "tokenmax",
+  "name": "aiusage",
   "compatibility_date": "2026-08-01",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@astrojs/cloudflare/entrypoints/server",
@@ -11,13 +11,14 @@
   "observability": {
     "enabled": true
   },
-  "workers_dev": true,
+  "workers_dev": false,
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "tokenmax",
-      "database_id": "7026a6bd-168b-411c-9ed0-1cd6601e718f",
+      "database_name": "aiusage",
+      "database_id": "370550fd-da01-41e5-9e36-3c6f3fc8e36a",
       "migrations_dir": "./migrations"
     }
-  ]
+  ],
+  "routes": [{ "pattern": "aiusage.cgaravito.dev", "custom_domain": true }]
 }

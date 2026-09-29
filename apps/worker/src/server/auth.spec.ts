@@ -5,7 +5,7 @@ import { rotateApiKey, signInRevokeSql } from "@/server/auth";
 import { hashApiKey } from "@/server/usage";
 import { createSqliteD1, type SqliteD1TestDatabase } from "@/test/sqlite-d1";
 
-const origin = "http://tokenmax.test";
+const origin = "http://aiusage.test";
 const clientId = "client-id";
 const clientSecret = "client-secret";
 const githubToken = "github-token";
@@ -33,7 +33,7 @@ const reportBody = JSON.stringify({
   ],
 });
 
-interface TokenmaxBindings {
+interface AiusageBindings {
   DB: D1Database;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
@@ -77,7 +77,7 @@ async function seeded(): Promise<SqliteD1TestDatabase> {
   return sqlite;
 }
 
-function environment(db: D1Database): TokenmaxBindings {
+function environment(db: D1Database): AiusageBindings {
   return {
     DB: db,
     GITHUB_CLIENT_ID: clientId,
@@ -139,7 +139,7 @@ function profileRequest(token: string): GithubRequest {
     accept: "application/vnd.github+json",
     authorization: `Bearer ${token}`,
     contentType: null,
-    userAgent: "tokenmax",
+    userAgent: "aiusage",
     hasSignal: true,
     body: null,
   };
@@ -173,7 +173,7 @@ function expectCookie(
 
 function expectStateCleared(response: Response): void {
   expect(
-    expectCookie(response, "tokenmax_oauth_state", ["Max-Age=0", "Path=/auth"]),
+    expectCookie(response, "aiusage_oauth_state", ["Max-Age=0", "Path=/auth"]),
   ).toBe("");
 }
 
@@ -189,7 +189,7 @@ function callbackUrl(state?: string): string {
 function callbackInit(state?: string): RequestInit {
   return state === undefined
     ? {}
-    : { headers: { Cookie: `tokenmax_oauth_state=${state}` } };
+    : { headers: { Cookie: `aiusage_oauth_state=${state}` } };
 }
 
 function rotateInit(key?: string): RequestInit {
@@ -241,7 +241,7 @@ describe("GET /auth/github", () => {
       `${origin}/auth/github/callback`,
     );
 
-    const state = expectCookie(response, "tokenmax_oauth_state", [
+    const state = expectCookie(response, "aiusage_oauth_state", [
       "Max-Age=600",
       "Path=/auth",
       "HttpOnly",
@@ -265,8 +265,8 @@ describe("GET /auth/github", () => {
       environment(db),
     );
 
-    const firstState = cookieValue(first, "tokenmax_oauth_state");
-    const secondState = cookieValue(second, "tokenmax_oauth_state");
+    const firstState = cookieValue(first, "aiusage_oauth_state");
+    const secondState = cookieValue(second, "aiusage_oauth_state");
     expect(firstState).toMatch(/^[0-9a-f]{64}$/);
     expect(secondState).toMatch(/^[0-9a-f]{64}$/);
     expect(firstState).not.toBe(secondState);
@@ -472,7 +472,7 @@ describe("GET /auth/github/callback", () => {
     expect(response.headers.get("Location")).toBe("/keys");
     expectStateCleared(response);
 
-    const key = expectCookie(response, "tokenmax_new_key", [
+    const key = expectCookie(response, "aiusage_new_key", [
       "Max-Age=60",
       "Path=/keys",
       "HttpOnly",
@@ -480,7 +480,7 @@ describe("GET /auth/github/callback", () => {
       "SameSite=Lax",
     ]);
     expect(key).toMatch(/^tmx_[0-9a-f]{64}$/);
-    const login = expectCookie(response, "tokenmax_new_login", [
+    const login = expectCookie(response, "aiusage_new_login", [
       "Max-Age=60",
       "Path=/keys",
       "HttpOnly",
@@ -518,7 +518,7 @@ describe("GET /auth/github/callback", () => {
     expect(sqlite.query("SELECT github_login FROM users")).toEqual([
       { github_login: "octocat" },
     ]);
-    expect(cookieValue(response, "tokenmax_new_login")).toBe("octocat");
+    expect(cookieValue(response, "aiusage_new_login")).toBe("octocat");
   });
 
   it("writes the user, the revocation and the new key in one batch", async () => {
@@ -557,8 +557,8 @@ describe("GET /auth/github/callback", () => {
       undefined,
       environment(db),
     );
-    const firstState = cookieValue(firstAuthorize, "tokenmax_oauth_state");
-    const secondState = cookieValue(secondAuthorize, "tokenmax_oauth_state");
+    const firstState = cookieValue(firstAuthorize, "aiusage_oauth_state");
+    const secondState = cookieValue(secondAuthorize, "aiusage_oauth_state");
     const requests = stubGithub([
       { body: JSON.stringify({ access_token: githubToken }) },
       { body: JSON.stringify({ login: "octocat", avatar_url: avatarUrl }) },
@@ -582,8 +582,8 @@ describe("GET /auth/github/callback", () => {
       environment(db),
     );
 
-    const firstKey = cookieValue(first, "tokenmax_new_key");
-    const secondKey = cookieValue(second, "tokenmax_new_key");
+    const firstKey = cookieValue(first, "aiusage_new_key");
+    const secondKey = cookieValue(second, "aiusage_new_key");
     expect(firstKey).toMatch(/^tmx_[0-9a-f]{64}$/);
     expect(secondKey).toMatch(/^tmx_[0-9a-f]{64}$/);
     expect(firstKey).not.toBe(secondKey);

@@ -1,7 +1,7 @@
-import { TokenmaxIslandElement } from "./element";
+import { AiusageIslandElement } from "./element";
 
-const tag = "tokenmax-island";
+const tag = "aiusage-island";
 
 if (customElements.get(tag) === undefined) {
-  customElements.define(tag, TokenmaxIslandElement);
+  customElements.define(tag, AiusageIslandElement);
 }

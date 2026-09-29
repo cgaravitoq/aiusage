@@ -7,13 +7,13 @@ export const prerender = false;
 
 Astro.response.headers.set("Cache-Control", "no-store");
 
-const newKey = Astro.cookies.get("tokenmax_new_key")?.value ?? null;
+const newKey = Astro.cookies.get("aiusage_new_key")?.value ?? null;
 if (newKey !== null) {
-  Astro.cookies.delete("tokenmax_new_key", { path: "/keys" });
+  Astro.cookies.delete("aiusage_new_key", { path: "/keys" });
 }
-const login = Astro.cookies.get("tokenmax_new_login")?.value ?? null;
+const login = Astro.cookies.get("aiusage_new_login")?.value ?? null;
 if (login !== null) {
-  Astro.cookies.delete("tokenmax_new_login", { path: "/keys" });
+  Astro.cookies.delete("aiusage_new_login", { path: "/keys" });
 }
 
 const origin = Astro.url.origin;

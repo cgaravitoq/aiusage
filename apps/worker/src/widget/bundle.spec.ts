@@ -44,7 +44,7 @@ describe("the built widget", () => {
   });
 
   it("defines the custom element", () => {
-    expect(bundle).toContain("tokenmax-island");
+    expect(bundle).toContain("aiusage-island");
     expect(bundle).toContain("customElements.define");
   });
 

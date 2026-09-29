@@ -1,13 +1,13 @@
 export function collectorCommands(origin: string, key: string): string[] {
   return [
-    "bun add -g tokenmax-collector",
-    `tokenmax install --url ${origin} --key ${key}`,
+    "bun add -g aiusage-collector",
+    `aiusage install --url ${origin} --key ${key}`,
   ];
 }
 
 export function widgetSnippet(origin: string, login: string): string {
   return [
     `<script src="${origin}/widget/v1.js" defer></script>`,
-    `<tokenmax-island login="${login}"></tokenmax-island>`,
+    `<aiusage-island login="${login}"></aiusage-island>`,
   ].join("\n");
 }

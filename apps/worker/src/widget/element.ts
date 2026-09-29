@@ -4,7 +4,7 @@ import { islandSheet } from "./styles";
 import { type UsageRange, widgetRanges } from "./summary";
 import { createView, type IslandView } from "./view";
 
-const rangeKey = "tokenmax-island-range";
+const rangeKey = "aiusage-island-range";
 const preferredRanges = [
   "week",
   "day",
@@ -37,7 +37,7 @@ function initialRange(summaries: LoadedSummaries): UsageRange {
   );
 }
 
-export class TokenmaxIslandElement extends HTMLElement {
+export class AiusageIslandElement extends HTMLElement {
   #view: IslandView | undefined;
   #open = false;
   #lastScrollY = 0;

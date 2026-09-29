@@ -11,7 +11,7 @@ beforeAll(async () => {
 describe("unknown route", () => {
   it("answers with the not-found page", async () => {
     const response = await container.renderToResponse(NotFoundPage, {
-      request: new Request("http://tokenmax.test/nope"),
+      request: new Request("http://aiusage.test/nope"),
     });
     const html = await response.text();
 

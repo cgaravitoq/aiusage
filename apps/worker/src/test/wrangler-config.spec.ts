@@ -13,18 +13,18 @@ const config: unknown = JSON.parse(
 
 const validDatabase = {
   binding: "DB",
-  database_name: "tokenmax",
+  database_name: "aiusage",
   database_id: "11111111-2222-3333-4444-555555555555",
   migrations_dir: "./migrations",
 };
 
-const validConfig = { name: "tokenmax", d1_databases: [validDatabase] };
+const validConfig = { name: "aiusage", d1_databases: [validDatabase] };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function bindsTokenmaxDatabase(value: unknown): boolean {
+function bindsAiusageDatabase(value: unknown): boolean {
   if (!isRecord(value)) return false;
   if (typeof value.name !== "string" || value.name.length === 0) return false;
   if (!Array.isArray(value.d1_databases)) return false;
@@ -43,13 +43,13 @@ function bindsTokenmaxDatabase(value: unknown): boolean {
 
 describe("wrangler configuration", () => {
   it("binds the D1 database as DB with a migrations directory and a UUID id", () => {
-    expect(bindsTokenmaxDatabase(config)).toBe(true);
+    expect(bindsAiusageDatabase(config)).toBe(true);
   });
 
   it("accepts an alternate worker name and database id", () => {
     expect(
-      bindsTokenmaxDatabase({
-        name: "tokenmax-staging",
+      bindsAiusageDatabase({
+        name: "aiusage-staging",
         d1_databases: [
           {
             ...validDatabase,
@@ -61,12 +61,12 @@ describe("wrangler configuration", () => {
   });
 
   it("rejects a missing or duplicate DB binding", () => {
-    expect(bindsTokenmaxDatabase({ name: "tokenmax", d1_databases: [] })).toBe(
+    expect(bindsAiusageDatabase({ name: "aiusage", d1_databases: [] })).toBe(
       false,
     );
     expect(
-      bindsTokenmaxDatabase({
-        name: "tokenmax",
+      bindsAiusageDatabase({
+        name: "aiusage",
         d1_databases: [validDatabase, validDatabase],
       }),
     ).toBe(false);
@@ -80,31 +80,31 @@ describe("wrangler configuration", () => {
       { ...validDatabase, migrations_dir: "./migration" },
     ]) {
       expect(
-        bindsTokenmaxDatabase({ ...validConfig, d1_databases: [wrong] }),
+        bindsAiusageDatabase({ ...validConfig, d1_databases: [wrong] }),
       ).toBe(false);
     }
-    expect(bindsTokenmaxDatabase({ ...validConfig, name: "" })).toBe(false);
+    expect(bindsAiusageDatabase({ ...validConfig, name: "" })).toBe(false);
   });
 
   it("rejects non-string fields", () => {
     for (const wrong of [
       { ...validDatabase, binding: ["DB"] },
-      { ...validDatabase, database_name: ["tokenmax"] },
+      { ...validDatabase, database_name: ["aiusage"] },
       { ...validDatabase, database_id: [validDatabase.database_id] },
       { ...validDatabase, migrations_dir: ["./migrations"] },
       null,
       "DB",
     ]) {
       expect(
-        bindsTokenmaxDatabase({ ...validConfig, d1_databases: [wrong] }),
+        bindsAiusageDatabase({ ...validConfig, d1_databases: [wrong] }),
       ).toBe(false);
     }
-    expect(bindsTokenmaxDatabase({ ...validConfig, name: ["tokenmax"] })).toBe(
+    expect(bindsAiusageDatabase({ ...validConfig, name: ["aiusage"] })).toBe(
       false,
     );
-    expect(bindsTokenmaxDatabase({ ...validConfig, d1_databases: {} })).toBe(
+    expect(bindsAiusageDatabase({ ...validConfig, d1_databases: {} })).toBe(
       false,
     );
-    expect(bindsTokenmaxDatabase(null)).toBe(false);
+    expect(bindsAiusageDatabase(null)).toBe(false);
   });
 });

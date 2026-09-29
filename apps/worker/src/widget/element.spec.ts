@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { TokenmaxIslandElement } from "./element";
+import type { AiusageIslandElement } from "./element";
 import "./index";
 import {
   fixture,
@@ -10,7 +10,7 @@ import {
   summaries,
 } from "./test/fixture";
 
-const tag = "tokenmax-island";
+const tag = "aiusage-island";
 const login = "cgaravitoq";
 const origin = location.origin;
 
@@ -28,8 +28,8 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
-function mount(attributes: Record<string, string> = {}): TokenmaxIslandElement {
-  const island = document.createElement(tag) as TokenmaxIslandElement;
+function mount(attributes: Record<string, string> = {}): AiusageIslandElement {
+  const island = document.createElement(tag) as AiusageIslandElement;
   island.setAttribute("login", login);
   for (const [name, value] of Object.entries(attributes)) {
     island.setAttribute(name, value);
@@ -40,7 +40,7 @@ function mount(attributes: Record<string, string> = {}): TokenmaxIslandElement {
 
 async function rendered(
   attributes: Record<string, string> = {},
-): Promise<{ island: TokenmaxIslandElement; root: HTMLElement }> {
+): Promise<{ island: AiusageIslandElement; root: HTMLElement }> {
   const island = mount(attributes);
   await vi.waitFor(() => expect(island.shadowRoot).not.toBeNull());
   const shadow = island.shadowRoot;
@@ -60,7 +60,7 @@ function labels(root: ParentNode): (string | null)[] {
   );
 }
 
-describe("tokenmax-island", () => {
+describe("aiusage-island", () => {
   it("renders the production summaries with the week range by default", async () => {
     const { island, root } = await rendered();
 
@@ -95,7 +95,7 @@ describe("tokenmax-island", () => {
     ).toEqual(["2", "4", "3", "4", "2", "2", "3", "2"]);
 
     const powered = query<HTMLAnchorElement>(root, ".powered");
-    expect(powered.textContent).toBe("powered by tokenmax");
+    expect(powered.textContent).toBe("powered by aiusage");
     expect(powered.href).toBe(`${origin}/`);
     expect(powered.target).toBe("_blank");
     expect(powered.rel).toBe("noreferrer");
@@ -142,7 +142,7 @@ describe("tokenmax-island", () => {
 
     click(query(root, '.switch button[data-range="month"]'));
 
-    expect(stored.get("tokenmax-island-range")).toBe("month");
+    expect(stored.get("aiusage-island-range")).toBe("month");
     expect(query(root, '.switch button[aria-pressed="true"]').textContent).toBe(
       "Month",
     );
@@ -158,7 +158,7 @@ describe("tokenmax-island", () => {
   });
 
   it("ignores a stored range the API cannot serve", async () => {
-    stored.set("tokenmax-island-range", "day");
+    stored.set("aiusage-island-range", "day");
     stubSummaries({
       origin,
       login,
@@ -201,7 +201,7 @@ describe("tokenmax-island", () => {
     expect(query(root, ".total:not([hidden])").textContent).toMatch(/^16,3/);
     expect(query(root, ".usage").textContent).toContain("US$");
     expect(query(root, ".powered").textContent).toBe(
-      "con tecnología de tokenmax",
+      "con tecnología de aiusage",
     );
     expect(query(root, ".toggle").getAttribute("aria-label")).toBe(
       "Mostrar detalles del uso de tokens",

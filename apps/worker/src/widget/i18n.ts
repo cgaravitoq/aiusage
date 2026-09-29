@@ -16,14 +16,14 @@ const copies: Record<WidgetLocale, WidgetCopy> = {
     ranges: { day: "Day", week: "Week", month: "Month" },
     expand: "Show token usage details",
     collapse: "Hide token usage details",
-    poweredBy: "powered by tokenmax",
+    poweredBy: "powered by aiusage",
   },
   es: {
     title: "Uso de tokens",
     ranges: { day: "Día", week: "Semana", month: "Mes" },
     expand: "Mostrar detalles del uso de tokens",
     collapse: "Ocultar detalles del uso de tokens",
-    poweredBy: "con tecnología de tokenmax",
+    poweredBy: "con tecnología de aiusage",
   },
 };
 

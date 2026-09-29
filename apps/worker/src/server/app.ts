@@ -19,9 +19,9 @@ import {
 
 const maxReportBytes = 1024 * 1024;
 
-const oauthStateCookie = "tokenmax_oauth_state";
-const newKeyCookie = "tokenmax_new_key";
-const newLoginCookie = "tokenmax_new_login";
+const oauthStateCookie = "aiusage_oauth_state";
+const newKeyCookie = "aiusage_new_key";
+const newLoginCookie = "aiusage_new_login";
 
 const authorizeEndpoint = "https://github.com/login/oauth/authorize";
 const exchangeEndpoint = "https://github.com/login/oauth/access_token";
@@ -171,7 +171,7 @@ app.get("/auth/github/callback", async (context) => {
     headers: {
       Authorization: `Bearer ${token.data.access_token}`,
       Accept: "application/vnd.github+json",
-      "User-Agent": "tokenmax",
+      "User-Agent": "aiusage",
     },
   });
   const user = githubProfile.safeParse(await profile.json().catch(() => null));
