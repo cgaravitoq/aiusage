@@ -137,14 +137,14 @@ async function report(
     const answer = await response.text();
     if (response.status !== 200) {
       return {
-        message: `tokenmax responded ${response.status}: ${answer}`,
+        message: `aiusage responded ${response.status}: ${answer}`,
         url,
       };
     }
     const accepted = acceptedCount(answer);
     if (accepted === null) {
       return {
-        message: `tokenmax responded an unexpected body: ${answer}`,
+        message: `aiusage responded an unexpected body: ${answer}`,
         url,
       };
     }

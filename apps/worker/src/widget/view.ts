@@ -50,7 +50,7 @@ function shoulder(side: "left" | "right"): SVGSVGElement {
 
 export function createView(options: ViewOptions): IslandView {
   const { copy, locale, origin, summaries, history, selected } = options;
-  const tokens = compactTokens(locale);
+  const tokens = compactTokens();
   const cost = usdCost(locale);
 
   const island = el("div", "island");

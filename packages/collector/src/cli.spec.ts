@@ -57,7 +57,7 @@ const run = async (argv: string[], io: Partial<CliIo> = {}): Promise<Run> => {
 };
 
 beforeEach(async () => {
-  home = await mkdtemp(join(tmpdir(), "tokenmax-cli-"));
+  home = await mkdtemp(join(tmpdir(), "aiusage-cli-"));
   paths = collectorPaths({ home });
 });
 
@@ -98,7 +98,7 @@ describe("collect", () => {
 
     expect(result).toEqual({
       code: 1,
-      stderr: [`${other}: tokenmax responded 401: {"error":"unauthorized"}`],
+      stderr: [`${other}: aiusage responded 401: {"error":"unauthorized"}`],
       stdout: [`accepted 3 days for abc-123 at ${url}`],
     });
   });
@@ -147,7 +147,7 @@ describe("collect", () => {
     expect(result).toEqual({
       code: 2,
       stderr: [
-        `no tokenmax config at ${paths.configFile}; run: tokenmax install --url <url> --key <key>`,
+        `no aiusage config at ${paths.configFile}; run: aiusage install --url <url> --key <key>`,
       ],
       stdout: [],
     });
@@ -162,12 +162,12 @@ describe("collect", () => {
 
     expect(result).toEqual({
       code: 1,
-      stderr: [`${url}: tokenmax responded 401: {"error":"unauthorized"}`],
+      stderr: [`${url}: aiusage responded 401: {"error":"unauthorized"}`],
       stdout: [],
     });
   });
 
-  it("prints the network error and exits 1 when tokenmax is unreachable", async () => {
+  it("prints the network error and exits 1 when aiusage is unreachable", async () => {
     await writeConfig(paths.configFile, { targets: [{ key, url }] });
     const result = await run(["collect"], {
       fetcher: failingFetch,
@@ -183,9 +183,9 @@ describe("collect", () => {
 });
 
 describe("install", () => {
-  const cliPath = "/repo/packages/tokenmax-collector/src/cli.ts";
+  const cliPath = "/repo/packages/aiusage-collector/src/cli.ts";
   const bunxCliPath =
-    "/private/var/folders/test/cache/T/bunx-501-tokenmax-collector@latest/node_modules/tokenmax-collector/src/cli.ts";
+    "/private/var/folders/test/cache/T/bunx-501-aiusage-collector@latest/node_modules/aiusage-collector/src/cli.ts";
   const execPath = "/opt/bun/bin/bun";
   const installIo = {
     cliPath,
@@ -262,7 +262,7 @@ describe("install", () => {
     expect(result).toEqual({
       code: 1,
       stderr: [
-        "refusing to schedule from a bunx path; install globally: bun add -g tokenmax-collector, then run: tokenmax install --url <url> --key <key>",
+        "refusing to schedule from a bunx path; install globally: bun add -g aiusage-collector, then run: aiusage install --url <url> --key <key>",
       ],
       stdout: [],
     });

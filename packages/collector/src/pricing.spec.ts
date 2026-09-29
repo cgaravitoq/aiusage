@@ -53,8 +53,8 @@ let dir: string;
 let pricesFile: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), "tokenmax-prices-"));
-  pricesFile = join(dir, "tokenmax", "litellm-prices.json");
+  dir = await mkdtemp(join(tmpdir(), "aiusage-prices-"));
+  pricesFile = join(dir, "aiusage", "litellm-prices.json");
 });
 
 afterEach(async () => {
@@ -209,7 +209,7 @@ describe("loadPrices", () => {
     expect(calls).toEqual([litellmPricesUrl]);
     expect(table.size).toBe(2);
     expect(await readFile(pricesFile, "utf8")).toBe(sample);
-    expect(await readdir(join(dir, "tokenmax"))).toEqual([
+    expect(await readdir(join(dir, "aiusage"))).toEqual([
       "litellm-prices.json",
     ]);
   });
@@ -263,7 +263,7 @@ describe("loadPrices", () => {
 });
 
 async function writeCache(source: string, modifiedAt: Date): Promise<void> {
-  await mkdir(join(dir, "tokenmax"), { recursive: true });
+  await mkdir(join(dir, "aiusage"), { recursive: true });
   await writeFile(pricesFile, source);
   await utimes(pricesFile, modifiedAt, modifiedAt);
 }

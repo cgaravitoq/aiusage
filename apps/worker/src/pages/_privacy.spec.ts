@@ -12,7 +12,7 @@ beforeAll(async () => {
 async function render(identity: Partial<Cloudflare.Env>): Promise<string> {
   Object.assign(env, identity);
   const response = await container.renderToResponse(PrivacyPage, {
-    request: new Request("http://tokenmax.test/privacy"),
+    request: new Request("http://aiusage.test/privacy"),
   });
   return response.text();
 }
@@ -35,8 +35,8 @@ describe("GET /privacy", () => {
       'href="https://dpa.example"',
       ">https://dpa.example</a>",
       "never stores the plaintext key",
-      "tokenmax_oauth_state",
-      "tokenmax_new_key",
+      "aiusage_oauth_state",
+      "aiusage_new_key",
       "/api/u/",
     ]) {
       expect(html).toContain(text);

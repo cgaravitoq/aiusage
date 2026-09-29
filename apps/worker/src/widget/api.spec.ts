@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { loadSummaries } from "./api";
 import { fixture, stubSummaries, summaries } from "./test/fixture";
 
-const origin = "https://tokenmax.example";
+const origin = "https://aiusage.example";
 const login = "cgaravitoq";
 
 beforeEach(() => {
@@ -20,12 +20,12 @@ afterEach(() => {
 describe("apiOrigin", () => {
   it("is the origin of the script that loaded the widget", async () => {
     const script = document.createElement("script");
-    script.src = "https://tokenmax.example/widget/v1.js";
+    script.src = "https://aiusage.example/widget/v1.js";
     vi.spyOn(document, "currentScript", "get").mockReturnValue(script);
 
     const { apiOrigin } = await import("./api");
 
-    expect(apiOrigin).toBe("https://tokenmax.example");
+    expect(apiOrigin).toBe("https://aiusage.example");
   });
 
   it("finds its own script tag when the browser no longer reports currentScript", async () => {

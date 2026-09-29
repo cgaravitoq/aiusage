@@ -31,7 +31,7 @@ export function launchAgentPlist(options: ScheduleOptions): string {
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>dev.tokenmax.collector</string>
+  <string>dev.aiusage.collector</string>
   <key>ProgramArguments</key>
   <array>
     <string>${escapeXml(options.execPath)}</string>
@@ -53,7 +53,7 @@ export function launchAgentPlist(options: ScheduleOptions): string {
 
 export function systemdService(options: ScheduleOptions): string {
   return `[Unit]
-Description=Report local token usage to tokenmax
+Description=Report local token usage to aiusage
 
 [Service]
 Type=oneshot
@@ -63,10 +63,10 @@ ExecStart="${escapeSystemd(options.execPath)}" "${escapeSystemd(options.cliPath)
 
 export function systemdTimer(): string {
   return `[Unit]
-Description=Report local token usage to tokenmax every five minutes
+Description=Report local token usage to aiusage every five minutes
 
 [Timer]
-Unit=tokenmax.service
+Unit=aiusage.service
 OnBootSec=1min
 OnUnitActiveSec=5min
 
@@ -82,5 +82,5 @@ export function loadCommand(
 ): string {
   return platform === "darwin"
     ? `launchctl bootstrap gui/${uid} ${quoteForShell(plistPath)}`
-    : "systemctl --user enable --now tokenmax.timer";
+    : "systemctl --user enable --now aiusage.timer";
 }

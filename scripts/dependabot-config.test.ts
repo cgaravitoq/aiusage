@@ -196,7 +196,7 @@ function validateAutoMergeWorkflow(source: string): void {
   const fence = typeof job.if === "string" ? job.if : "";
   for (const expected of [
     "github.actor == 'dependabot[bot]'",
-    "github.repository == 'cgaravitoq/tokenmax'",
+    "github.repository == 'cgaravitoq/aiusage'",
     "github.event.pull_request.base.ref == 'main'",
   ]) {
     if (!fence.includes(expected)) {
@@ -290,7 +290,7 @@ describe("Dependabot auto-merge workflow", () => {
 
   it.each([
     ["actor", "dependabot[bot]", "renovate[bot]"],
-    ["repository", "cgaravitoq/tokenmax", "someone/fork"],
+    ["repository", "cgaravitoq/aiusage", "someone/fork"],
     ["base", "base.ref == 'main'", "base.ref == 'staging'"],
   ])("rejects a changed %s fence", (_name, current, replacement) => {
     expect(() =>

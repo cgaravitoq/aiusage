@@ -23,7 +23,7 @@ export const prerender = false;
         When you sign in with GitHub the service stores your GitHub login and
         avatar URL from the OAuth profile, and your API key as a hash. The
         service never stores the plaintext key: it travels once to /keys in the
-        60-second <code>tokenmax_new_key</code> cookie, which the page deletes
+        60-second <code>aiusage_new_key</code> cookie, which the page deletes
         when it shows the key.
       </p>
       <p>
@@ -32,11 +32,11 @@ export const prerender = false;
       </p>
       <h2>Cookies</h2>
       <p>
-        <code>tokenmax_oauth_state</code> carries the OAuth state during sign-in.
+        <code>aiusage_oauth_state</code> carries the OAuth state during sign-in.
         It is scoped to /auth and expires after 10 minutes.
       </p>
       <p>
-        <code>tokenmax_new_key</code> carries the freshly issued key to the
+        <code>aiusage_new_key</code> carries the freshly issued key to the
         /keys page once. It is scoped to /keys and expires after 60 seconds.
       </p>
       <p>

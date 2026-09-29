@@ -146,7 +146,7 @@ let home: string;
 let paths: CollectorPaths;
 
 beforeEach(async () => {
-  home = await mkdtemp(join(tmpdir(), "tokenmax-collect-"));
+  home = await mkdtemp(join(tmpdir(), "aiusage-collect-"));
   paths = collectorPaths({ home });
 });
 
@@ -169,7 +169,7 @@ describe("collect", () => {
     expect(back).toEqual(report);
   });
 
-  it("reports the mapped days to the tokenmax report endpoint", async () => {
+  it("reports the mapped days to the aiusage report endpoint", async () => {
     await writeConfig(paths.configFile, {
       targets: [{ key, url: "http://localhost:8797/" }],
       timezone: "Europe/Madrid",
@@ -813,7 +813,7 @@ describe("collect", () => {
       kind: "reported",
       machine: "abc-123",
       targets: [
-        { message: 'tokenmax responded 401: {"error":"unauthorized"}', url },
+        { message: 'aiusage responded 401: {"error":"unauthorized"}', url },
       ],
       warnings: [],
     });
@@ -851,7 +851,7 @@ describe("collect", () => {
         kind: "reported",
         machine: "abc-123",
         targets: [
-          { message: `tokenmax responded an unexpected body: ${body}`, url },
+          { message: `aiusage responded an unexpected body: ${body}`, url },
         ],
         warnings: [],
       });
@@ -1109,7 +1109,7 @@ describe("collect", () => {
     );
   });
 
-  it("reports nothing without calling tokenmax when there is no usage", async () => {
+  it("reports nothing without calling aiusage when there is no usage", async () => {
     await writeConfig(paths.configFile, { targets: [target] });
     const result = await collect({
       env: { home },

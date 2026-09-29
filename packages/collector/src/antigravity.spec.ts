@@ -15,7 +15,7 @@ import { schema, writeConversation } from "./test/antigravity-fixture";
 let dir: string;
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), "tokenmax-antigravity-"));
+  dir = await mkdtemp(join(tmpdir(), "aiusage-antigravity-"));
 });
 
 afterEach(async () => {

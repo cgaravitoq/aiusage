@@ -4,7 +4,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeAll, describe, expect, it } from "vitest";
 import KeysPage from "./keys.astro";
 
-const origin = "http://tokenmax.test";
+const origin = "http://aiusage.test";
 const key = `tmx_${"ab".repeat(32)}`;
 
 let container: AstroContainer;
@@ -39,7 +39,7 @@ function deleted(cookies: string[], name: string): string[] {
 describe("GET /keys", () => {
   it("forbids caching the page that shows the key", async () => {
     const { cacheControl } = await render({
-      Cookie: `tokenmax_new_key=${key}`,
+      Cookie: `aiusage_new_key=${key}`,
     });
 
     expect(cacheControl).toBe("no-store");
@@ -47,7 +47,7 @@ describe("GET /keys", () => {
 
   it("shows the key once and deletes both cookies on /keys", async () => {
     const { html, cookies } = await render({
-      Cookie: `tokenmax_new_key=${key}; tokenmax_new_login=octocat`,
+      Cookie: `aiusage_new_key=${key}; aiusage_new_login=octocat`,
     });
 
     expect(html).toContain(`>${key}</code>`);
@@ -55,10 +55,10 @@ describe("GET /keys", () => {
     expect(html).toContain('href="/privacy"');
     expect(html).toContain("revokes every existing key");
     expect(html).toContain(
-      "tokenmax install --url http://tokenmax.test --key &lt;key&gt;</code>",
+      "aiusage install --url http://aiusage.test --key &lt;key&gt;</code>",
     );
     expect(cookies).toHaveLength(2);
-    for (const name of ["tokenmax_new_key", "tokenmax_new_login"]) {
+    for (const name of ["aiusage_new_key", "aiusage_new_login"]) {
       const attributes = deleted(cookies, name);
       expect(attributes[0]).toBe(`${name}=deleted`);
       expect(attributes).toContain("Path=/keys");
@@ -68,27 +68,27 @@ describe("GET /keys", () => {
 
   it("prefills both collector commands and the snippet with the new key", async () => {
     const { html } = await render({
-      Cookie: `tokenmax_new_key=${key}; tokenmax_new_login=octocat`,
+      Cookie: `aiusage_new_key=${key}; aiusage_new_login=octocat`,
     });
 
-    expect(html).toContain("bun add -g tokenmax-collector");
-    expect(html).toContain(`tokenmax install --url ${origin} --key ${key}`);
+    expect(html).toContain("bun add -g aiusage-collector");
+    expect(html).toContain(`aiusage install --url ${origin} --key ${key}`);
     expect(html).toContain(
       `&lt;script src=&quot;${origin}/widget/v1.js&quot; defer&gt;&lt;/script&gt;`,
     );
     expect(html).toContain(
-      "&lt;tokenmax-island login=&quot;octocat&quot;&gt;&lt;/tokenmax-island&gt;",
+      "&lt;aiusage-island login=&quot;octocat&quot;&gt;&lt;/aiusage-island&gt;",
     );
     expect(html.match(/<button type="button"/g)).toHaveLength(4);
   });
 
   it("leaves the login as a placeholder without its cookie", async () => {
-    const { html } = await render({ Cookie: `tokenmax_new_key=${key}` });
+    const { html } = await render({ Cookie: `aiusage_new_key=${key}` });
 
     expect(html).toContain(
-      "&lt;tokenmax-island login=&quot;&lt;login&gt;&quot;&gt;",
+      "&lt;aiusage-island login=&quot;&lt;login&gt;&quot;&gt;",
     );
-    expect(html).toContain(`tokenmax install --url ${origin} --key ${key}`);
+    expect(html).toContain(`aiusage install --url ${origin} --key ${key}`);
   });
 
   it("points a visitor without a key back to GitHub", async () => {
@@ -100,11 +100,11 @@ describe("GET /keys", () => {
     expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
     expect(html).toContain('href="/privacy"');
     expect(html).toContain(
-      "tokenmax install --url http://tokenmax.test --key &lt;key&gt;</code>",
+      "aiusage install --url http://aiusage.test --key &lt;key&gt;</code>",
     );
     expect(html).not.toContain("tmx_");
     expect(html).not.toContain("astro-island");
-    expect(html).not.toContain("tokenmax-island");
+    expect(html).not.toContain("aiusage-island");
     expect(cookies).toEqual([]);
   });
 });

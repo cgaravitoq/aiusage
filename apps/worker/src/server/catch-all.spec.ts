@@ -38,17 +38,17 @@ describe("catch-all routes", () => {
 
   for (const method of ["GET", "POST"]) {
     it(`forwards ${method} /api requests to the Hono app`, async () => {
-      await forward(apiRoute, "http://tokenmax.test/api/health", method);
+      await forward(apiRoute, "http://aiusage.test/api/health", method);
     });
 
     it(`forwards ${method} /auth requests to the Hono app`, async () => {
-      await forward(authRoute, "http://tokenmax.test/auth/anything", method);
+      await forward(authRoute, "http://aiusage.test/auth/anything", method);
     });
   }
 
   it("answers GET /api/health from the Hono app", async () => {
     const response = await apiRoute(
-      context("http://tokenmax.test/api/health", "GET"),
+      context("http://aiusage.test/api/health", "GET"),
     );
 
     expect(response.status).toBe(200);
@@ -64,7 +64,7 @@ describe("catch-all routes", () => {
     Object.assign(env, { DB: sqlite.asD1() });
 
     const response = await apiRoute(
-      context("http://tokenmax.test/api/u/octocat/summary", "GET"),
+      context("http://aiusage.test/api/u/octocat/summary", "GET"),
     );
 
     expect(response.status).toBe(200);

@@ -278,7 +278,7 @@ describe("POST /api/report", () => {
 
   it("rejects a body that declares more than one mebibyte", async () => {
     const sqlite = await fixture();
-    const request = new Request("http://tokenmax.test/api/report", {
+    const request = new Request("http://aiusage.test/api/report", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${validKey}`,
@@ -310,7 +310,7 @@ describe("POST /api/report", () => {
 
   it("accepts a body that declares exactly one mebibyte", async () => {
     const sqlite = await fixture();
-    const request = new Request("http://tokenmax.test/api/report", {
+    const request = new Request("http://aiusage.test/api/report", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${validKey}`,

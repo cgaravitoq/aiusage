@@ -1,5 +1,5 @@
 {
-  "name": "@tokenmax/worker",
+  "name": "@aiusage/worker",
   "version": "0.1.0",
   "private": true,
   "type": "module",

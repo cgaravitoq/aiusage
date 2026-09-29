@@ -109,7 +109,7 @@ export async function install(options: InstallOptions): Promise<InstallPlan> {
     (cliPath.includes("/install/cache/") || /\/bunx-\d+-[^/]+\//.test(cliPath))
   ) {
     throw new Error(
-      "refusing to schedule from a bunx path; install globally: bun add -g tokenmax-collector, then run: tokenmax install --url <url> --key <key>",
+      "refusing to schedule from a bunx path; install globally: bun add -g aiusage-collector, then run: aiusage install --url <url> --key <key>",
     );
   }
   const files = scheduleFiles(platform, paths, {
