@@ -4,6 +4,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeAll, describe, expect, it } from "vitest";
 import KeysPage from "./keys.astro";
 
+const origin = "http://tokenmax.test";
 const key = `tmx_${"ab".repeat(32)}`;
 
 let container: AstroContainer;
@@ -21,13 +22,18 @@ async function render(
   headers?: HeadersInit,
 ): Promise<{ html: string; cookies: string[]; cacheControl: string | null }> {
   const response = await container.renderToResponse(KeysPage, {
-    request: new Request("http://tokenmax.test/keys", { headers }),
+    request: new Request(`${origin}/keys`, { headers }),
   });
   return {
     html: await response.text(),
     cookies: [...App.getSetCookieFromResponse(response)],
     cacheControl: response.headers.get("Cache-Control"),
   };
+}
+
+function deleted(cookies: string[], name: string): string[] {
+  const cookie = cookies.find((header) => header.startsWith(`${name}=`));
+  return cookie?.split("; ") ?? [];
 }
 
 describe("GET /keys", () => {
@@ -39,30 +45,50 @@ describe("GET /keys", () => {
     expect(cacheControl).toBe("no-store");
   });
 
-  it("shows the key once and deletes the cookie on /keys", async () => {
+  it("shows the key once and deletes both cookies on /keys", async () => {
     const { html, cookies } = await render({
-      Cookie: `tokenmax_new_key=${key}`,
+      Cookie: `tokenmax_new_key=${key}; tokenmax_new_login=octocat`,
     });
 
-    expect(html.split(`<code>${key}</code>`)).toHaveLength(2);
-    expect(html).toContain(
-      `props="{&quot;apiKey&quot;:[0,&quot;${key}&quot;]}" ssr client="load"`,
-    );
-    expect(html.split(key)).toHaveLength(3);
+    expect(html).toContain(`>${key}</code>`);
     expect(html).not.toContain("No key to show");
     expect(html).toContain('href="/privacy"');
     expect(html).toContain("revokes every existing key");
     expect(html).toContain(
-      "reinstall the collector with the new key by running:",
-    );
-    expect(html).toContain(
       "tokenmax install --url http://tokenmax.test --key &lt;key&gt;</code>",
     );
-    expect(cookies).toHaveLength(1);
-    const attributes = cookies[0]?.split("; ") ?? [];
-    expect(attributes[0]).toBe("tokenmax_new_key=deleted");
-    expect(attributes).toContain("Path=/keys");
-    expect(attributes).toContain("Expires=Thu, 01 Jan 1970 00:00:00 GMT");
+    expect(cookies).toHaveLength(2);
+    for (const name of ["tokenmax_new_key", "tokenmax_new_login"]) {
+      const attributes = deleted(cookies, name);
+      expect(attributes[0]).toBe(`${name}=deleted`);
+      expect(attributes).toContain("Path=/keys");
+      expect(attributes).toContain("Expires=Thu, 01 Jan 1970 00:00:00 GMT");
+    }
+  });
+
+  it("prefills both collector commands and the snippet with the new key", async () => {
+    const { html } = await render({
+      Cookie: `tokenmax_new_key=${key}; tokenmax_new_login=octocat`,
+    });
+
+    expect(html).toContain("bun add -g tokenmax-collector");
+    expect(html).toContain(`tokenmax install --url ${origin} --key ${key}`);
+    expect(html).toContain(
+      `&lt;script src=&quot;${origin}/widget/v1.js&quot; defer&gt;&lt;/script&gt;`,
+    );
+    expect(html).toContain(
+      "&lt;tokenmax-island login=&quot;octocat&quot;&gt;&lt;/tokenmax-island&gt;",
+    );
+    expect(html.match(/<button type="button"/g)).toHaveLength(4);
+  });
+
+  it("leaves the login as a placeholder without its cookie", async () => {
+    const { html } = await render({ Cookie: `tokenmax_new_key=${key}` });
+
+    expect(html).toContain(
+      "&lt;tokenmax-island login=&quot;&lt;login&gt;&quot;&gt;",
+    );
+    expect(html).toContain(`tokenmax install --url ${origin} --key ${key}`);
   });
 
   it("points a visitor without a key back to GitHub", async () => {
@@ -73,15 +99,12 @@ describe("GET /keys", () => {
     );
     expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
     expect(html).toContain('href="/privacy"');
-    expect(html).toContain("revokes every existing key");
-    expect(html).toContain(
-      "reinstall the collector with the new key by running:",
-    );
     expect(html).toContain(
       "tokenmax install --url http://tokenmax.test --key &lt;key&gt;</code>",
     );
     expect(html).not.toContain("tmx_");
     expect(html).not.toContain("astro-island");
+    expect(html).not.toContain("tokenmax-island");
     expect(cookies).toEqual([]);
   });
 });
