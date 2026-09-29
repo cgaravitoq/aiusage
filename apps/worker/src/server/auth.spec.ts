@@ -271,6 +271,17 @@ describe("GET /auth/github", () => {
     expect(secondState).toMatch(/^[0-9a-f]{64}$/);
     expect(firstState).not.toBe(secondState);
   });
+
+  it("keeps the summary CORS header off the sign-in redirect", async () => {
+    const response = await app.request(
+      `${origin}/auth/github`,
+      undefined,
+      environment(database().asD1()),
+    );
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  });
 });
 
 describe("GET /auth/github/callback", () => {
