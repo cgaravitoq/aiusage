@@ -18,7 +18,7 @@ A Cloudflare account, Bun 1.4.0 and `bunx wrangler login`.
 2. From `apps/worker`, run `bunx wrangler d1 create aiusage`, then replace `d1_databases[0].database_id` in `apps/worker/wrangler.jsonc` with the returned id.
 3. Point `routes[0].pattern` in `apps/worker/wrangler.jsonc` at the domain you serve, and create a GitHub OAuth app whose callback URL is `https://<domain>/auth/github/callback`.
    `workers_dev` and `preview_urls` are off, so the worker answers on that domain alone.
-   The `deploy` job smoke-tests the domain as well, so the hardcoded `https://aiusage.cgaravito.dev/api/health` in `.github/workflows/ci.yml:122` and the four copies that pin it in `scripts/ci-deploy-jobs.test.ts` at lines 63, 357, 399 and 400 have to move to your domain before the first push to `main`, or `bun run test:dependency-policy` fails the `ci` job and the worker never deploys.
+   The `deploy` job smoke-tests the domain as well, so replace every `aiusage.cgaravito.dev` in `.github/workflows/ci.yml` and `scripts/ci-deploy-jobs.test.ts` with your domain before the first push to `main`, or `bun run test:dependency-policy` fails the `ci` job and the worker never deploys.
 4. Set the six secrets with `bunx wrangler secret put`: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `PRIVACY_CONTROLLER`, `PRIVACY_EMAIL`, `PRIVACY_AUTHORITY_NAME` and `PRIVACY_AUTHORITY_URL`.
 5. From `apps/worker`, run `bunx wrangler d1 migrations apply DB --remote`.
 6. Run `bun run build` from the root, then deploy by pushing to `main` with the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, or with `bunx wrangler deploy` from `apps/worker`.
