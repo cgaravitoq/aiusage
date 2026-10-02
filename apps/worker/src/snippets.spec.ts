@@ -3,7 +3,6 @@ import {
   agentOpenInTargets,
   agentPrompt,
   collectorCommands,
-  terminalAgents,
   widgetSnippet,
 } from "./snippets";
 
@@ -58,16 +57,5 @@ describe("agentOpenInTargets", () => {
     expect(targets[3]?.href).toBe(
       `https://www.perplexity.ai/search?q=${query}`,
     );
-  });
-});
-
-describe("terminalAgents", () => {
-  it("lists the agents that run commands in a terminal", () => {
-    expect(terminalAgents).toEqual([
-      "Claude Code",
-      "Codex",
-      "Cursor",
-      "Gemini CLI",
-    ]);
   });
 });

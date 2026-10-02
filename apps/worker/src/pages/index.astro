@@ -5,7 +5,6 @@ import {
   agentOpenInTargets,
   agentPrompt,
   collectorCommands,
-  terminalAgents,
   widgetSnippet,
 } from "@/snippets";
 
@@ -61,7 +60,6 @@ const prompt = agentPrompt(origin, { key: "<KEY>", login: "<LOGIN>" });
     <AgentSetup
       prompt={prompt}
       openIn={agentOpenInTargets(prompt)}
-      agents={terminalAgents}
       client:load
     />
     <p>

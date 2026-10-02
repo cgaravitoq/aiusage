@@ -79,7 +79,7 @@ describe("GET /keys", () => {
     expect(html).toContain(
       "&lt;aiusage-island login=&quot;octocat&quot;&gt;&lt;/aiusage-island&gt;",
     );
-    expect(html.match(/<button type="button"/g)).toHaveLength(8);
+    expect(html.match(/<button type="button"/g)).toHaveLength(5);
   });
 
   it("offers only the copy group, prefilled with the key and login", async () => {
@@ -88,7 +88,7 @@ describe("GET /keys", () => {
     });
 
     expect(html).toContain(">Set up with an AI agent</summary>");
-    expect(html).toContain(">Copy for your terminal agent</h3>");
+    expect(html).toContain(">Copy prompt</button>");
     expect(html).not.toContain(">Open in</h3>");
     expect(html).toContain(`aiusage install --url ${origin} --key ${key}`);
     expect(html).toContain("aiusage-island login=\\&quot;octocat\\&quot;");

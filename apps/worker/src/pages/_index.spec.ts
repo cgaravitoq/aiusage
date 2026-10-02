@@ -1,7 +1,7 @@
 import vueRenderer from "@astrojs/vue/server.js";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeAll, describe, expect, it } from "vitest";
-import { agentPrompt, terminalAgents } from "@/snippets";
+import { agentPrompt } from "@/snippets";
 import IndexPage from "./index.astro";
 
 let container: AstroContainer;
@@ -73,7 +73,7 @@ describe("GET /", () => {
 
     expect(html).toContain(">Set up with an AI agent</summary>");
     expect(html).toContain(">Open in</h3>");
-    expect(html).toContain(">Copy for your terminal agent</h3>");
+    expect(html).toContain(">Copy prompt</button>");
     for (const href of [
       `https://chatgpt.com/?q=${query}`,
       `https://claude.ai/new?q=${query}`,
@@ -81,9 +81,6 @@ describe("GET /", () => {
       `https://www.perplexity.ai/search?q=${query}`,
     ]) {
       expect(html).toContain(`href="${href}"`);
-    }
-    for (const agent of terminalAgents) {
-      expect(html).toContain(`>${agent}</button>`);
     }
   });
 
