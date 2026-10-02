@@ -19,7 +19,18 @@ const { title } = Astro.props;
 
 <style is:global>
   :root {
-    color-scheme: light dark;
+    color-scheme: light;
+    --background: oklch(0.9551 0 0);
+    --foreground: oklch(0.3211 0 0);
+    --card: oklch(0.9702 0 0);
+    --primary: oklch(0.4349 0 0);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.9067 0 0);
+    --muted-foreground: oklch(0.5103 0 0);
+    --border: oklch(0.8576 0 0);
+    --ring: oklch(0.4349 0 0);
+    --font-sans: "Instagram Sans", sans-serif;
+    --font-mono: "Fira Code", monospace;
   }
 
   body {
