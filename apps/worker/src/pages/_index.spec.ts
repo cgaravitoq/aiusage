@@ -1,7 +1,7 @@
 import vueRenderer from "@astrojs/vue/server.js";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { beforeAll, describe, expect, it } from "vitest";
-import { agentPrompt, terminalAgents } from "@/snippets";
+import { agentPrompt } from "@/snippets";
 import IndexPage from "./index.astro";
 
 let container: AstroContainer;
@@ -29,7 +29,9 @@ describe("GET /", () => {
 
     const steps = html.slice(html.indexOf("<ol>"), html.indexOf("</ol>"));
     expect(steps.split("<li>")).toHaveLength(5);
-    expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
+    expect(html).toContain(
+      '<a class="button" href="/auth/github">Sign in with GitHub</a>',
+    );
     expect(html).toContain("<h2>Copy the key</h2>");
     expect(html).toContain("<h2>Install the collector</h2>");
     expect(html).toContain("<h2>Embed the widget</h2>");
@@ -48,6 +50,7 @@ describe("GET /", () => {
     );
     expect(html).toContain("revokes every existing key");
     expect(html).toContain('href="/privacy"');
+    expect(html).toMatch(/<\/main>\s*<footer>/);
   });
 
   it("takes the origin from the request instead of a fixed host", async () => {
@@ -71,7 +74,7 @@ describe("GET /", () => {
 
     expect(html).toContain(">Set up with an AI agent</summary>");
     expect(html).toContain(">Open in</h3>");
-    expect(html).toContain(">Copy for your terminal agent</h3>");
+    expect(html).toContain(">Copy prompt</button>");
     for (const href of [
       `https://chatgpt.com/?q=${query}`,
       `https://claude.ai/new?q=${query}`,
@@ -79,9 +82,6 @@ describe("GET /", () => {
       `https://www.perplexity.ai/search?q=${query}`,
     ]) {
       expect(html).toContain(`href="${href}"`);
-    }
-    for (const agent of terminalAgents) {
-      expect(html).toContain(`>${agent}</button>`);
     }
   });
 

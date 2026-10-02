@@ -5,7 +5,6 @@ import {
   agentOpenInTargets,
   agentPrompt,
   collectorCommands,
-  terminalAgents,
   widgetSnippet,
 } from "@/snippets";
 
@@ -30,7 +29,7 @@ const prompt = agentPrompt(origin, { key: "<KEY>", login: "<LOGIN>" });
     </p>
     <ol>
       <li>
-        <h2><a href="/auth/github">Sign in with GitHub</a></h2>
+        <h2><a class="button" href="/auth/github">Sign in with GitHub</a></h2>
         <p>
           Your login and avatar URL come from the GitHub profile, and your
           login becomes the public address of your summary.
@@ -61,7 +60,6 @@ const prompt = agentPrompt(origin, { key: "<KEY>", login: "<LOGIN>" });
     <AgentSetup
       prompt={prompt}
       openIn={agentOpenInTargets(prompt)}
-      agents={terminalAgents}
       client:load
     />
     <p>
@@ -69,11 +67,11 @@ const prompt = agentPrompt(origin, { key: "<KEY>", login: "<LOGIN>" });
       login on every machine. After signing in again, reinstall the collector
       with the new key by running: <code>{installCommand}</code>.
     </p>
-    <footer>
-      <a href="/privacy">Privacy</a>
-      <a href="/api/health">/api/health</a>
-    </footer>
   </main>
+  <footer>
+    <a href="/privacy">Privacy</a>
+    <a href="/api/health">/api/health</a>
+  </footer>
   <script is:inline src={`${origin}/widget/v1.js`} defer></script>
   <aiusage-island login={demoLogin}></aiusage-island>
 </Base>

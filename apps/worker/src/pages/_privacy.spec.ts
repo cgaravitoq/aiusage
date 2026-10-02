@@ -41,6 +41,7 @@ describe("GET /privacy", () => {
     ]) {
       expect(html).toContain(text);
     }
+    expect(html).toMatch(/<\/main>\s*<footer>/);
 
     expect(
       html.split(

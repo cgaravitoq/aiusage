@@ -4,14 +4,13 @@ import { ref } from "vue";
 defineProps<{
   prompt: string;
   openIn: { name: string; href: string }[];
-  agents: string[];
 }>();
 
-const copied = ref<string | null>(null);
+const copied = ref(false);
 
-async function copy(prompt: string, agent: string): Promise<void> {
+async function copy(prompt: string): Promise<void> {
   await navigator.clipboard.writeText(prompt);
-  copied.value = agent;
+  copied.value = true;
 }
 </script>
 
@@ -29,14 +28,7 @@ async function copy(prompt: string, agent: string): Promise<void> {
       </ul>
     </section>
     <section>
-      <h3>Copy for your terminal agent</h3>
-      <ul>
-        <li v-for="agent in agents" :key="agent">
-          <button type="button" @click="copy(prompt, agent)">
-            {{ copied === agent ? "Copied" : agent }}
-          </button>
-        </li>
-      </ul>
+      <button type="button" @click="copy(prompt)">{{ copied ? "Copied" : "Copy prompt" }}</button>
     </section>
   </details>
 </template>
@@ -48,18 +40,18 @@ async function copy(prompt: string, agent: string): Promise<void> {
 
 summary {
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 section {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
 }
 
 h3 {
   margin: 0 0 0.5rem;
   font-size: 0.875rem;
-  font-weight: 400;
-  opacity: 0.7;
+  font-weight: 500;
+  color: var(--muted-foreground);
 }
 
 ul {

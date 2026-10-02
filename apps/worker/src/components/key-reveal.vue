@@ -17,3 +17,7 @@ defineProps<{
   <h2>Embed the widget</h2>
   <CopyBlock :text="snippet" />
 </template>
+
+<style scoped>
+h2 { margin-top: 2.5rem; }
+</style>

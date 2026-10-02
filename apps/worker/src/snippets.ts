@@ -17,8 +17,6 @@ export interface AgentCredentials {
   login: string;
 }
 
-export const terminalAgents = ["Claude Code", "Codex", "Cursor", "Gemini CLI"];
-
 export function agentPrompt(
   origin: string,
   { key, login }: AgentCredentials,

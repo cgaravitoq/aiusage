@@ -79,7 +79,7 @@ describe("GET /keys", () => {
     expect(html).toContain(
       "&lt;aiusage-island login=&quot;octocat&quot;&gt;&lt;/aiusage-island&gt;",
     );
-    expect(html.match(/<button type="button"/g)).toHaveLength(8);
+    expect(html.match(/<button type="button"/g)).toHaveLength(5);
   });
 
   it("offers only the copy group, prefilled with the key and login", async () => {
@@ -88,7 +88,7 @@ describe("GET /keys", () => {
     });
 
     expect(html).toContain(">Set up with an AI agent</summary>");
-    expect(html).toContain(">Copy for your terminal agent</h3>");
+    expect(html).toContain(">Copy prompt</button>");
     expect(html).not.toContain(">Open in</h3>");
     expect(html).toContain(`aiusage install --url ${origin} --key ${key}`);
     expect(html).toContain("aiusage-island login=\\&quot;octocat\\&quot;");
@@ -118,7 +118,9 @@ describe("GET /keys", () => {
     expect(html).toContain(
       "No key to show. Signing in again issues a new key and revokes every existing key of your login on every machine; reinstall the collector with the new key by running:",
     );
-    expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
+    expect(html).toContain(
+      '<a class="button" href="/auth/github">Sign in with GitHub</a>',
+    );
     expect(html).toContain('href="/privacy"');
     expect(html).toContain(
       "aiusage install --url http://aiusage.test --key &lt;key&gt;</code>",

@@ -20,11 +20,11 @@ async function copy(): Promise<void> {
 
 <style scoped>
 .block {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .block button {
   display: block;
-  margin-left: auto;
+  margin: -0.5rem 0 0 auto;
 }
 </style>
