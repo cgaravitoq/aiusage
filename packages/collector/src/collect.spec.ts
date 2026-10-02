@@ -30,59 +30,116 @@ const sample = await readFile(
 );
 const expectedDays: UsageDay[] = [
   {
-    cache_create: 14820642,
-    cache_read: 628581555,
-    cost_usd: 506.93065499999983,
-    date: "2026-09-09",
-    input: 10640,
-    model: "claude-opus-5",
-    output: 2512793,
+    cache_create: 16901,
+    cache_read: 13560,
+    cost_usd: 0.036618000000000005,
+    date: "2026-09-22",
+    input: 10,
+    model: "claude-haiku-4-5-20251001",
+    output: 290,
     provider: "claude",
   },
   {
-    cache_create: 10,
-    cache_read: 20,
-    cost_usd: 0.50217184,
-    date: "2026-09-09",
-    input: 9963,
-    model: "deepseek-v4-flash",
-    output: 53,
+    cache_create: 6666790,
+    cache_read: 451078084,
+    cost_usd: 331.7700170000004,
+    date: "2026-09-22",
+    input: 4460,
+    model: "claude-opus-5",
+    output: 1581631,
+    provider: "claude",
+  },
+  {
+    cache_create: 584125,
+    cache_read: 39873314,
+    cost_usd: 14.793850800000003,
+    date: "2026-09-22",
+    input: 472,
+    model: "claude-opus-5-5",
+    output: 107215,
+    provider: "claude",
+  },
+  {
+    cache_create: 0,
+    cache_read: 14315904,
+    cost_usd: 0.287444712,
+    date: "2026-09-22",
+    input: 817896,
+    model: "deepseek-v4.1-flash",
+    output: 44989,
+    provider: "opencode",
+  },
+  {
+    cache_create: 0,
+    cache_read: 2571968,
+    cost_usd: 0.11519331040000001,
+    date: "2026-09-22",
+    input: 512264,
+    model: "mimo-v2.6-flash",
+    output: 70236,
+    provider: "opencode",
+  },
+  {
+    cache_create: 0,
+    cache_read: 247424000,
+    cost_usd: 2.942646000000001,
+    date: "2026-09-22",
+    input: 5511508,
+    model: "deepseek-v4.1-flash",
+    output: 2289413,
     provider: "pi",
   },
   {
     cache_create: 0,
-    cache_read: 45556480,
-    cost_usd: 17.436172,
-    date: "2026-09-10",
-    input: 2675362,
-    model: "gpt-5.6-terra",
-    output: 247846,
+    cache_read: 57988032,
+    cost_usd: 3.098191910000003,
+    date: "2026-09-22",
+    input: 7295893,
+    model: "glm-5.3-flash",
+    output: 528334,
+    provider: "pi",
+  },
+  {
+    cache_create: 0,
+    cache_read: 17461824,
+    cost_usd: 0.2582674471999998,
+    date: "2026-09-22",
+    input: 633541,
+    model: "mimo-v2.6-flash",
+    output: 430995,
+    provider: "pi",
+  },
+  {
+    cache_create: 5872744,
+    cache_read: 307359443,
+    cost_usd: 136.44884459999983,
+    date: "2026-09-26",
+    input: 3376,
+    model: "claude-opus-5-5",
+    output: 1399075,
+    provider: "claude",
+  },
+  {
+    cache_create: 0,
+    cache_read: 238604288,
+    cost_usd: 127.04867119999999,
+    date: "2026-09-26",
+    input: 4712394,
+    model: "gpt-5.6-sol",
+    output: 637869,
+    provider: "codex",
+  },
+  {
+    cache_create: 0,
+    cache_read: 1446912,
+    cost_usd: 2.8843419999999997,
+    date: "2026-09-26",
+    input: 108123,
+    model: "gpt-6-astra",
+    output: 7124,
     provider: "codex",
   },
 ];
-
-const ccusageAntigravityDay = JSON.stringify({
-  daily: [
-    {
-      agents: [
-        {
-          agent: "antigravity",
-          modelBreakdowns: [
-            {
-              cacheCreationTokens: 0,
-              cacheReadTokens: 0,
-              cost: 7.5,
-              inputTokens: 9_996_009,
-              modelName: "gemini-3.8-flash-high",
-              outputTokens: 0,
-            },
-          ],
-        },
-      ],
-      period: "2026-09-09",
-    },
-  ],
-});
 
 interface Request {
   init: RequestInit;
@@ -219,7 +276,7 @@ describe("collect", () => {
     ).toEqual({
       days: expectedDays,
       machine: "abc-123",
-      providers: ["antigravity", "claude", "codex", "devin", "pi"],
+      providers: ["antigravity", "claude", "codex", "devin", "opencode", "pi"],
       timezone: "Europe/Madrid",
     });
   });
@@ -328,7 +385,6 @@ describe("collect", () => {
     expect(priceCalls).toEqual([litellmPricesUrl]);
     expect(await readFile(paths.pricesFile, "utf8")).toBe(litellmPrices);
     expect(JSON.parse(String(requests[0].init.body)).days).toEqual([
-      ...expectedDays,
       {
         cache_create: 0,
         cache_read: 8144,
@@ -339,13 +395,14 @@ describe("collect", () => {
         output: 133,
         provider: "antigravity",
       },
+      ...expectedDays,
     ]);
   });
 
-  it("drops the Antigravity steps of a day ccusage already reports", async () => {
+  it("reports the collector's Antigravity rows instead of ccusage's", async () => {
     await writeConfig(paths.configFile, {
       targets: [target],
-      timezone: "UTC",
+      timezone: "Europe/Madrid",
     });
     const conversations = antigravityConversationsDir(home);
     await mkdir(conversations, { recursive: true });
@@ -353,64 +410,7 @@ describe("collect", () => {
       generations: [[1318, "gemini-3.8-flash"]],
       steps: [
         {
-          at: new Date("2026-09-09T12:00:00.000Z"),
-          input: 10_081_780,
-          modelCode: 1318,
-          output: 0,
-        },
-      ],
-    });
-    const requests: Request[] = [];
-
-    const result = await collect({
-      env: { home },
-      fetcher: pricingFetcher(
-        reportFetcher(requests, 200, '{"accepted":1}'),
-        [],
-      ),
-      identity,
-      runner: dailyRunner(ccusageAntigravityDay, []),
-      today: new Date("2026-09-10T23:30:00.000Z"),
-    });
-
-    expect(result).toEqual({
-      kind: "reported",
-      machine: "abc-123",
-      targets: [{ accepted: 1, url }],
-      warnings: [],
-    });
-    expect(JSON.parse(String(requests[0].init.body)).days).toEqual([
-      {
-        cache_create: 0,
-        cache_read: 0,
-        cost_usd: 7.5,
-        date: "2026-09-09",
-        input: 9_996_009,
-        model: "gemini-3.8-flash-high",
-        output: 0,
-        provider: "antigravity",
-      },
-    ]);
-  });
-
-  it("keeps the Antigravity steps of a day ccusage does not cover", async () => {
-    await writeConfig(paths.configFile, {
-      targets: [target],
-      timezone: "UTC",
-    });
-    const conversations = antigravityConversationsDir(home);
-    await mkdir(conversations, { recursive: true });
-    writeConversation(join(conversations, "a.db"), {
-      generations: [[1318, "gemini-3.8-flash"]],
-      steps: [
-        {
-          at: new Date("2026-09-09T12:00:00.000Z"),
-          input: 10_081_780,
-          modelCode: 1318,
-          output: 0,
-        },
-        {
-          at: new Date("2026-09-10T12:00:00.000Z"),
+          at: new Date("2026-09-22T12:00:00.000Z"),
           cacheRead: 8144,
           input: 9536,
           modelCode: 1318,
@@ -423,41 +423,29 @@ describe("collect", () => {
     const result = await collect({
       env: { home },
       fetcher: pricingFetcher(
-        reportFetcher(requests, 200, '{"accepted":1}'),
+        reportFetcher(requests, 200, '{"accepted":12}'),
         [],
       ),
       identity,
-      runner: dailyRunner(ccusageAntigravityDay, []),
-      today: new Date("2026-09-10T23:30:00.000Z"),
+      runner: dailyRunner(sample, []),
+      today: new Date("2026-09-26T12:00:00.000Z"),
     });
 
-    expect(result).toEqual({
-      kind: "reported",
-      machine: "abc-123",
-      targets: [{ accepted: 1, url }],
-      warnings: [],
-    });
-    expect(JSON.parse(String(requests[0].init.body)).days).toEqual([
-      {
-        cache_create: 0,
-        cache_read: 0,
-        cost_usd: 7.5,
-        date: "2026-09-09",
-        input: 9_996_009,
-        model: "gemini-3.8-flash-high",
-        output: 0,
-        provider: "antigravity",
-      },
+    expect(result).toMatchObject({ kind: "reported", warnings: [] });
+    const report = JSON.parse(String(requests[0].init.body));
+    expect(report.days).toEqual([
+      ...expectedDays.slice(0, 8),
       {
         cache_create: 0,
         cache_read: 8144,
         cost_usd: 9536 * 7.5e-7 + 133 * 3.75e-6 + 8144 * 7.5e-8,
-        date: "2026-09-10",
+        date: "2026-09-22",
         input: 9536,
         model: "gemini-3.8-flash",
         output: 133,
         provider: "antigravity",
       },
+      ...expectedDays.slice(8),
     ]);
   });
 
@@ -506,7 +494,6 @@ describe("collect", () => {
     });
     expect(priceCalls).toEqual([litellmPricesUrl]);
     expect(JSON.parse(String(requests[0].init.body)).days).toEqual([
-      ...expectedDays,
       {
         cache_create: 17366,
         cache_read: 12510,
@@ -517,6 +504,7 @@ describe("collect", () => {
         output: 223,
         provider: "devin",
       },
+      ...expectedDays,
     ]);
   });
 
@@ -556,7 +544,7 @@ describe("collect", () => {
         ),
       ],
     });
-    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(4);
+    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(12);
   });
 
   it("warns once about a model the prices do not cover and reports its rows", async () => {
@@ -748,6 +736,7 @@ describe("collect", () => {
       "claude",
       "codex",
       "devin",
+      "opencode",
       "pi",
     ]);
   });
@@ -789,11 +778,12 @@ describe("collect", () => {
         `antigravity: skipped ${join(conversations, "broken.db")}: file is not a database`,
       ],
     });
-    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(4);
+    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(12);
     expect(JSON.parse(String(requests[0].init.body)).providers).toEqual([
       "claude",
       "codex",
       "devin",
+      "opencode",
       "pi",
     ]);
   });

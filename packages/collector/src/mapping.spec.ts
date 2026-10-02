@@ -14,61 +14,217 @@ const sample = await readFile(
 
 const expected: UsageDay[] = [
   {
-    cache_create: 14820642,
-    cache_read: 628581555,
-    cost_usd: 506.93065499999983,
-    date: "2026-09-09",
-    input: 10640,
-    model: "claude-opus-5",
-    output: 2512793,
+    cache_create: 16901,
+    cache_read: 13560,
+    cost_usd: 0.036618000000000005,
+    date: "2026-09-22",
+    input: 10,
+    model: "claude-haiku-4-5-20251001",
+    output: 290,
     provider: "claude",
   },
   {
-    cache_create: 10,
-    cache_read: 20,
-    cost_usd: 0.50217184,
-    date: "2026-09-09",
-    input: 9963,
-    model: "deepseek-v4-flash",
-    output: 53,
+    cache_create: 6666790,
+    cache_read: 451078084,
+    cost_usd: 331.7700170000004,
+    date: "2026-09-22",
+    input: 4460,
+    model: "claude-opus-5",
+    output: 1581631,
+    provider: "claude",
+  },
+  {
+    cache_create: 584125,
+    cache_read: 39873314,
+    cost_usd: 14.793850800000003,
+    date: "2026-09-22",
+    input: 472,
+    model: "claude-opus-5-5",
+    output: 107215,
+    provider: "claude",
+  },
+  {
+    cache_create: 0,
+    cache_read: 14315904,
+    cost_usd: 0.287444712,
+    date: "2026-09-22",
+    input: 817896,
+    model: "deepseek-v4.1-flash",
+    output: 44989,
+    provider: "opencode",
+  },
+  {
+    cache_create: 0,
+    cache_read: 2571968,
+    cost_usd: 0.11519331040000001,
+    date: "2026-09-22",
+    input: 512264,
+    model: "mimo-v2.6-flash",
+    output: 70236,
+    provider: "opencode",
+  },
+  {
+    cache_create: 0,
+    cache_read: 247424000,
+    cost_usd: 2.942646000000001,
+    date: "2026-09-22",
+    input: 5511508,
+    model: "deepseek-v4.1-flash",
+    output: 2289413,
     provider: "pi",
   },
   {
     cache_create: 0,
-    cache_read: 45556480,
-    cost_usd: 17.436172,
-    date: "2026-09-10",
-    input: 2675362,
-    model: "gpt-5.6-terra",
-    output: 247846,
+    cache_read: 57988032,
+    cost_usd: 3.098191910000003,
+    date: "2026-09-22",
+    input: 7295893,
+    model: "glm-5.3-flash",
+    output: 528334,
+    provider: "pi",
+  },
+  {
+    cache_create: 0,
+    cache_read: 17461824,
+    cost_usd: 0.2582674471999998,
+    date: "2026-09-22",
+    input: 633541,
+    model: "mimo-v2.6-flash",
+    output: 430995,
+    provider: "pi",
+  },
+  {
+    cache_create: 5872744,
+    cache_read: 307359443,
+    cost_usd: 136.44884459999983,
+    date: "2026-09-26",
+    input: 3376,
+    model: "claude-opus-5-5",
+    output: 1399075,
+    provider: "claude",
+  },
+  {
+    cache_create: 0,
+    cache_read: 238604288,
+    cost_usd: 127.04867119999999,
+    date: "2026-09-26",
+    input: 4712394,
+    model: "gpt-5.6-sol",
+    output: 637869,
+    provider: "codex",
+  },
+  {
+    cache_create: 0,
+    cache_read: 1446912,
+    cost_usd: 2.8843419999999997,
+    date: "2026-09-26",
+    input: 108123,
+    model: "gpt-6-astra",
+    output: 7124,
     provider: "codex",
   },
 ];
 
 describe("mapCcusageDays", () => {
-  it("maps a captured daily sample to the reported rows", () => {
+  it("maps the captured 20.0.26 sample to the reported rows", () => {
     expect(mapCcusageDays(parseCcusageDaily(sample))).toEqual(expected);
   });
 
   it("sums the rows that collapse to one date, provider and model", () => {
-    const collapsed = mapCcusageDays(parseCcusageDaily(sample)).find(
-      (day) => day.provider === "pi",
+    const collapsed = mapCcusageDays(
+      parseCcusageDaily(
+        JSON.stringify({
+          daily: [
+            {
+              agents: [
+                {
+                  agent: "pi",
+                  modelBreakdowns: [
+                    {
+                      cacheCreationTokens: 10,
+                      cacheReadTokens: 20,
+                      cost: 0.5,
+                      inputTokens: 100,
+                      modelName: "[pi] deepseek-v4-flash",
+                      outputTokens: 50,
+                    },
+                    {
+                      cacheCreationTokens: 1,
+                      cacheReadTokens: 2,
+                      cost: 0.25,
+                      inputTokens: 10,
+                      modelName: "deepseek-v4-flash",
+                      outputTokens: 5,
+                    },
+                  ],
+                },
+              ],
+              period: "2026-09-22",
+            },
+          ],
+        }),
+      ),
     );
-    expect(collapsed).toEqual(expected[1]);
+
+    expect(collapsed).toEqual([
+      {
+        cache_create: 11,
+        cache_read: 22,
+        cost_usd: 0.75,
+        date: "2026-09-22",
+        input: 110,
+        model: "deepseek-v4-flash",
+        output: 55,
+        provider: "pi",
+      },
+    ]);
   });
 
   it("drops a model breakdown whose four token counts are zero", () => {
-    const models = mapCcusageDays(parseCcusageDaily(sample)).map(
-      (day) => day.model,
+    const mapped = mapCcusageDays(
+      parseCcusageDaily(
+        JSON.stringify({
+          daily: [
+            {
+              agents: [
+                {
+                  agent: "claude",
+                  modelBreakdowns: [
+                    {
+                      cacheCreationTokens: 0,
+                      cacheReadTokens: 0,
+                      cost: 0,
+                      inputTokens: 0,
+                      modelName: "claude-sonnet-5",
+                      outputTokens: 0,
+                    },
+                    {
+                      cacheCreationTokens: 1,
+                      cacheReadTokens: 2,
+                      cost: 0.5,
+                      inputTokens: 10,
+                      modelName: "claude-opus-5",
+                      outputTokens: 20,
+                    },
+                  ],
+                },
+              ],
+              period: "2026-09-22",
+            },
+          ],
+        }),
+      ),
     );
-    expect(models).not.toContain("claude-sonnet-5");
+
+    expect(mapped.map((day) => day.model)).toEqual(["claude-opus-5"]);
   });
 
   it("strips the agent prefix from model names", () => {
-    const models = mapCcusageDays(parseCcusageDaily(sample)).map(
-      (day) => day.model,
-    );
-    expect(models).toContain("deepseek-v4-flash");
+    const models = mapCcusageDays(parseCcusageDaily(sample))
+      .filter((day) => day.provider === "pi")
+      .map((day) => day.model);
+
+    expect(models).toContain("deepseek-v4.1-flash");
     expect(models.some((model) => model.startsWith("["))).toBe(false);
   });
 

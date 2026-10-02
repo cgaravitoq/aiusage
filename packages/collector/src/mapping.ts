@@ -37,10 +37,16 @@ function addRow(rows: Map<string, UsageDay>, row: UsageDay): void {
   existing.output += row.output;
 }
 
+// ccusage's own Antigravity adapter leaves the reasoning tokens out of output
+// and names the model with its effort suffix, so the collector's decoder is
+// the only source of that provider.
+const ccusageAgents = (day: CcusageDaily["daily"][number]) =>
+  day.agents.filter((agent) => agent.agent !== antigravityProvider);
+
 export function ccusageProviders(output: CcusageDaily): string[] {
   const providers = new Set<string>();
   for (const day of output.daily) {
-    for (const agent of day.agents) {
+    for (const agent of ccusageAgents(day)) {
       providers.add(agent.agent);
     }
   }
@@ -51,7 +57,7 @@ export function mapCcusageDays(output: CcusageDaily): UsageDay[] {
   const rows = new Map<string, UsageDay>();
 
   for (const day of output.daily) {
-    for (const agent of day.agents) {
+    for (const agent of ccusageAgents(day)) {
       for (const breakdown of agent.modelBreakdowns) {
         const row: UsageDay = {
           cache_create: breakdown.cacheCreationTokens,

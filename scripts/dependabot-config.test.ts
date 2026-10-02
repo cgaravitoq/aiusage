@@ -503,6 +503,6 @@ describe("Dependabot auto-merge workflow", () => {
 
 describe("Collector dependency pins", () => {
   it("keeps ccusage exact, because its JSON shape is undocumented", () => {
-    expect(collectorDependencies.ccusage).toBe("20.0.20");
+    expect(collectorDependencies.ccusage).toBe("20.0.26");
   });
 });

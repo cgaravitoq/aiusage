@@ -18,9 +18,9 @@ aiusage/
 - TypeScript 6 in strict mode, with Node 24.19.0 declared in `engines.node`.
 - Biome 2.5 formats and lints, and oxlint 1.86 with the ultracite anti-slop preset is the second linter.
 - Vitest 4.1 runs the workspace specs, and `bun test` runs the dependency policy and workflow golden tests under `scripts/`.
-- The collector spawns ccusage 20.0.20, pinned exact because it reads an undocumented JSON shape through a per-platform native binary.
-- The collector also decodes the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations` itself, because ccusage has no adapter for them: each model step is a protobuf in SQLite, read through `node:sqlite`, priced from the LiteLLM table cached for a day at `~/.config/aiusage/litellm-prices.json`, and reported as the `antigravity` provider.
-- The collector reads the Devin CLI transcripts under `~/.local/share/devin/cli/transcripts` for the same reason: each agent step of an ATIF JSON carries `metrics.prompt_tokens`, `completion_tokens`, `cached_tokens` and `extra.cache_creation_input_tokens`, the uncached input is the prompt minus both caches, the effort suffix of `model_name` collapses into the LiteLLM name (`claude-fable-5-1-xhigh` to `claude-fable-5-1`, `gpt-5-6-sol-high` to `gpt-5.6-sol`), and the rows are reported as the `devin` provider.
+- The collector spawns ccusage 20.0.26, pinned exact because it reads an undocumented JSON shape through a per-platform native binary.
+- The collector also decodes the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations` itself and ignores ccusage's `antigravity` rows, because ccusage's adapter leaves the reasoning tokens out of output and names the model with its effort suffix: each model step is a protobuf in SQLite, read through `node:sqlite`, priced from the LiteLLM table cached for a day at `~/.config/aiusage/litellm-prices.json`, and reported as the `antigravity` provider.
+- The collector reads the Devin CLI transcripts under `~/.local/share/devin/cli/transcripts` because ccusage has no adapter for them: each agent step of an ATIF JSON carries `metrics.prompt_tokens`, `completion_tokens`, `cached_tokens` and `extra.cache_creation_input_tokens`, the uncached input is the prompt minus both caches, the effort suffix of `model_name` collapses into the LiteLLM name (`claude-fable-5-1-xhigh` to `claude-fable-5-1`, `gpt-5-6-sol-high` to `gpt-5.6-sol`), and the rows are reported as the `devin` provider.
 
 ## Conventions
 
