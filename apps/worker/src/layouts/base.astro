@@ -64,6 +64,8 @@ const { title } = Astro.props;
   html { background: var(--background); }
 
   body {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     margin: 0;
     color: var(--foreground);
@@ -111,7 +113,7 @@ const { title } = Astro.props;
   .brand { font-weight: 700; text-decoration: none; }
   .site-header span { color: var(--muted-foreground); }
 
-  main { padding-top: 4.5rem; padding-bottom: 3rem; }
+  main { flex: 1; padding-top: 4.5rem; padding-bottom: 3rem; }
   main.not-found { min-height: 35rem; padding-top: 8rem; text-align: center; }
 
   h1, h2, h3 { line-height: 1.2; letter-spacing: -0.015em; }
