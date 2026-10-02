@@ -14,16 +14,6 @@ const sample = await readFile(
 
 const expected: UsageDay[] = [
   {
-    cache_create: 0,
-    cache_read: 12108940,
-    cost_usd: 3.4878810000000002,
-    date: "2026-09-22",
-    input: 1788879,
-    model: "gemini-3.8-flash-high",
-    output: 27925,
-    provider: "antigravity",
-  },
-  {
     cache_create: 16901,
     cache_read: 13560,
     cost_usd: 0.036618000000000005,

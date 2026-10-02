@@ -30,16 +30,6 @@ const sample = await readFile(
 );
 const expectedDays: UsageDay[] = [
   {
-    cache_create: 0,
-    cache_read: 12108940,
-    cost_usd: 3.4878810000000002,
-    date: "2026-09-22",
-    input: 1788879,
-    model: "gemini-3.8-flash-high",
-    output: 27925,
-    provider: "antigravity",
-  },
-  {
     cache_create: 16901,
     cache_read: 13560,
     cost_usd: 0.036618000000000005,
@@ -150,29 +140,6 @@ const expectedDays: UsageDay[] = [
     provider: "codex",
   },
 ];
-
-const ccusageAntigravityDay = JSON.stringify({
-  daily: [
-    {
-      agents: [
-        {
-          agent: "antigravity",
-          modelBreakdowns: [
-            {
-              cacheCreationTokens: 0,
-              cacheReadTokens: 0,
-              cost: 7.5,
-              inputTokens: 9_996_009,
-              modelName: "gemini-3.8-flash-high",
-              outputTokens: 0,
-            },
-          ],
-        },
-      ],
-      period: "2026-09-09",
-    },
-  ],
-});
 
 interface Request {
   init: RequestInit;
@@ -432,10 +399,10 @@ describe("collect", () => {
     ]);
   });
 
-  it("drops the Antigravity steps of a day ccusage already reports", async () => {
+  it("reports the collector's Antigravity rows instead of ccusage's", async () => {
     await writeConfig(paths.configFile, {
       targets: [target],
-      timezone: "UTC",
+      timezone: "Europe/Madrid",
     });
     const conversations = antigravityConversationsDir(home);
     await mkdir(conversations, { recursive: true });
@@ -443,64 +410,7 @@ describe("collect", () => {
       generations: [[1318, "gemini-3.8-flash"]],
       steps: [
         {
-          at: new Date("2026-09-09T12:00:00.000Z"),
-          input: 10_081_780,
-          modelCode: 1318,
-          output: 0,
-        },
-      ],
-    });
-    const requests: Request[] = [];
-
-    const result = await collect({
-      env: { home },
-      fetcher: pricingFetcher(
-        reportFetcher(requests, 200, '{"accepted":1}'),
-        [],
-      ),
-      identity,
-      runner: dailyRunner(ccusageAntigravityDay, []),
-      today: new Date("2026-09-10T23:30:00.000Z"),
-    });
-
-    expect(result).toEqual({
-      kind: "reported",
-      machine: "abc-123",
-      targets: [{ accepted: 1, url }],
-      warnings: [],
-    });
-    expect(JSON.parse(String(requests[0].init.body)).days).toEqual([
-      {
-        cache_create: 0,
-        cache_read: 0,
-        cost_usd: 7.5,
-        date: "2026-09-09",
-        input: 9_996_009,
-        model: "gemini-3.8-flash-high",
-        output: 0,
-        provider: "antigravity",
-      },
-    ]);
-  });
-
-  it("keeps the Antigravity steps of a day ccusage does not cover", async () => {
-    await writeConfig(paths.configFile, {
-      targets: [target],
-      timezone: "UTC",
-    });
-    const conversations = antigravityConversationsDir(home);
-    await mkdir(conversations, { recursive: true });
-    writeConversation(join(conversations, "a.db"), {
-      generations: [[1318, "gemini-3.8-flash"]],
-      steps: [
-        {
-          at: new Date("2026-09-09T12:00:00.000Z"),
-          input: 10_081_780,
-          modelCode: 1318,
-          output: 0,
-        },
-        {
-          at: new Date("2026-09-10T12:00:00.000Z"),
+          at: new Date("2026-09-22T12:00:00.000Z"),
           cacheRead: 8144,
           input: 9536,
           modelCode: 1318,
@@ -513,41 +423,29 @@ describe("collect", () => {
     const result = await collect({
       env: { home },
       fetcher: pricingFetcher(
-        reportFetcher(requests, 200, '{"accepted":1}'),
+        reportFetcher(requests, 200, '{"accepted":12}'),
         [],
       ),
       identity,
-      runner: dailyRunner(ccusageAntigravityDay, []),
-      today: new Date("2026-09-10T23:30:00.000Z"),
+      runner: dailyRunner(sample, []),
+      today: new Date("2026-09-26T12:00:00.000Z"),
     });
 
-    expect(result).toEqual({
-      kind: "reported",
-      machine: "abc-123",
-      targets: [{ accepted: 1, url }],
-      warnings: [],
-    });
-    expect(JSON.parse(String(requests[0].init.body)).days).toEqual([
-      {
-        cache_create: 0,
-        cache_read: 0,
-        cost_usd: 7.5,
-        date: "2026-09-09",
-        input: 9_996_009,
-        model: "gemini-3.8-flash-high",
-        output: 0,
-        provider: "antigravity",
-      },
+    expect(result).toMatchObject({ kind: "reported", warnings: [] });
+    const report = JSON.parse(String(requests[0].init.body));
+    expect(report.days).toEqual([
+      ...expectedDays.slice(0, 8),
       {
         cache_create: 0,
         cache_read: 8144,
         cost_usd: 9536 * 7.5e-7 + 133 * 3.75e-6 + 8144 * 7.5e-8,
-        date: "2026-09-10",
+        date: "2026-09-22",
         input: 9536,
         model: "gemini-3.8-flash",
         output: 133,
         provider: "antigravity",
       },
+      ...expectedDays.slice(8),
     ]);
   });
 
@@ -646,7 +544,7 @@ describe("collect", () => {
         ),
       ],
     });
-    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(13);
+    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(12);
   });
 
   it("warns once about a model the prices do not cover and reports its rows", async () => {
@@ -880,9 +778,8 @@ describe("collect", () => {
         `antigravity: skipped ${join(conversations, "broken.db")}: file is not a database`,
       ],
     });
-    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(13);
+    expect(JSON.parse(String(requests[0].init.body)).days).toHaveLength(12);
     expect(JSON.parse(String(requests[0].init.body)).providers).toEqual([
-      "antigravity",
       "claude",
       "codex",
       "devin",
