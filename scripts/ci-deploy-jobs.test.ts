@@ -24,7 +24,7 @@ const expectedGate =
   "(github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && needs.ci.result == 'success'";
 
 const wranglerAction =
-  "cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0";
+  "cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0";
 
 const cacheAction = "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9";
 
@@ -345,8 +345,8 @@ describe("CI deploy jobs", () => {
 
   it("rejects an unreviewed wrangler action SHA", () => {
     const mutated = workflowSource.replace(
-      "wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0",
-      "wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e1",
+      "wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0",
+      "wrangler-action@953926a2e2182532811c01a25e53647d93bf07c1",
     );
     expect(mutated).not.toBe(workflowSource);
     expect(() => validateWorkflow(mutated)).toThrow(goldenFailure);
@@ -377,7 +377,7 @@ describe("CI deploy jobs", () => {
   it("rejects appending a second deploy step", () => {
     const mutated = workflowSource.replace(
       "      - name: Smoke test production\n",
-      "      - name: Deploy Worker\n        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0\n\n      - name: Smoke test production\n",
+      "      - name: Deploy Worker\n        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0\n\n      - name: Smoke test production\n",
     );
     expect(mutated).not.toBe(workflowSource);
     expect(() => validateWorkflow(mutated)).toThrow(goldenFailure);
