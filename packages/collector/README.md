@@ -22,7 +22,7 @@ The config is `{ "targets": [{ "url": "...", "key": "..." }], "timezone": "..." 
 ## Report
 
 `aiusage collect` reports the last 14 calendar days to `POST /api/report` of every configured target.
-The rows come from ccusage for every agent it detects, plus two sources ccusage has no adapter for: the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations`, reported as `antigravity`, and the Devin CLI transcripts under `~/.local/share/devin/cli/transcripts`, reported as `devin` with the effort suffix of each model collapsed into its LiteLLM name.
+The rows come from ccusage for every agent it detects except Antigravity, plus two sources the collector decodes itself: the Antigravity CLI conversations under `~/.gemini/antigravity-cli/conversations`, reported as `antigravity` in place of ccusage's Antigravity rows because ccusage's adapter leaves the reasoning tokens out of output and names the model with its effort suffix, and the Devin CLI transcripts, which ccusage has no adapter for, under `~/.local/share/devin/cli/transcripts`, reported as `devin` with the effort suffix of each model collapsed into its LiteLLM name.
 Both are priced from the LiteLLM table cached for a day at `~/.config/aiusage/litellm-prices.json`.
 
 `collect` prints one `accepted <n> days for <machine> at <url>` line per target, where `<n>` is the number of usage rows the instance stored rather than a count of calendar days, and exits 1 when any target rejects the report.
