@@ -67,11 +67,11 @@ const prompt = agentPrompt(origin, { key: "<KEY>", login: "<LOGIN>" });
       login on every machine. After signing in again, reinstall the collector
       with the new key by running: <code>{installCommand}</code>.
     </p>
-    <footer>
-      <a href="/privacy">Privacy</a>
-      <a href="/api/health">/api/health</a>
-    </footer>
   </main>
+  <footer>
+    <a href="/privacy">Privacy</a>
+    <a href="/api/health">/api/health</a>
+  </footer>
   <script is:inline src={`${origin}/widget/v1.js`} defer></script>
   <aiusage-island login={demoLogin}></aiusage-island>
 </Base>

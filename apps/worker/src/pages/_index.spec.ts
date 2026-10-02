@@ -50,6 +50,7 @@ describe("GET /", () => {
     );
     expect(html).toContain("revokes every existing key");
     expect(html).toContain('href="/privacy"');
+    expect(html).toMatch(/<\/main>\s*<footer>/);
   });
 
   it("takes the origin from the request instead of a fixed host", async () => {
