@@ -118,7 +118,9 @@ describe("GET /keys", () => {
     expect(html).toContain(
       "No key to show. Signing in again issues a new key and revokes every existing key of your login on every machine; reinstall the collector with the new key by running:",
     );
-    expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
+    expect(html).toContain(
+      '<a class="button" href="/auth/github">Sign in with GitHub</a>',
+    );
     expect(html).toContain('href="/privacy"');
     expect(html).toContain(
       "aiusage install --url http://aiusage.test --key &lt;key&gt;</code>",

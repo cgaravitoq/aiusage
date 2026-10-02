@@ -1,16 +1,11 @@
 ---
 import { env } from "cloudflare:workers";
+import Base from "@/layouts/base.astro";
 
 export const prerender = false;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Privacy</title>
-  </head>
-  <body>
+<Base title="Privacy">
     <main>
       <h1>Privacy notice</h1>
       <h2>Controller</h2>
@@ -73,5 +68,4 @@ export const prerender = false;
       </p>
       <footer><a href="/">Home</a></footer>
     </main>
-  </body>
-</html>
+</Base>

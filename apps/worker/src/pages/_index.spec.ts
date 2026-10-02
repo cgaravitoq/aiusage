@@ -29,7 +29,9 @@ describe("GET /", () => {
 
     const steps = html.slice(html.indexOf("<ol>"), html.indexOf("</ol>"));
     expect(steps.split("<li>")).toHaveLength(5);
-    expect(html).toContain('<a href="/auth/github">Sign in with GitHub</a>');
+    expect(html).toContain(
+      '<a class="button" href="/auth/github">Sign in with GitHub</a>',
+    );
     expect(html).toContain("<h2>Copy the key</h2>");
     expect(html).toContain("<h2>Install the collector</h2>");
     expect(html).toContain("<h2>Embed the widget</h2>");
