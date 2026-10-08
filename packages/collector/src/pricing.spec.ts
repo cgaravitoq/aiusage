@@ -16,6 +16,7 @@ import {
   litellmPricesUrl,
   loadPrices,
   parseLitellmPrices,
+  priceFor,
 } from "./pricing";
 
 const sample = JSON.stringify({
@@ -107,6 +108,41 @@ describe("costOf", () => {
         output: 5,
       }),
     ).toBe(2 * 7.5e-7 + 5 * 3.75e-6 + 8144 * 7.5e-8 + 17366 * 1.25e-6);
+  });
+});
+
+describe("priceFor", () => {
+  const listed = {
+    cacheCreate: 0,
+    cacheRead: 1.5e-8,
+    input: 4.4e-8,
+    output: 3e-7,
+  };
+  const resold = {
+    cacheCreate: 0,
+    cacheRead: 6e-9,
+    input: 3e-7,
+    output: 1.2e-6,
+  };
+  const own = { cacheCreate: 0, cacheRead: 2e-8, input: 1e-7, output: 4e-7 };
+  const table = new Map([
+    ["azure_ai/deepseek-v4.1-flash", resold],
+    ["openrouter/deepseek/deepseek-v4.1-flash", listed],
+    ["glm-5.3-flash", own],
+    ["openrouter/z-ai/glm-5.3-flash", listed],
+  ]);
+
+  it("prefers the bare LiteLLM name", () => {
+    expect(priceFor(table, "glm-5.3-flash")).toBe(own);
+  });
+
+  it("falls back to the OpenRouter listing of a model LiteLLM only keys by reseller", () => {
+    expect(priceFor(table, "deepseek-v4.1-flash")).toBe(listed);
+  });
+
+  it("finds nothing for a model no listing names", () => {
+    expect(priceFor(table, "swe-2-max")).toBeUndefined();
+    expect(priceFor(table, "deepseek")).toBeUndefined();
   });
 });
 

@@ -52,6 +52,27 @@ export function parseLitellmPrices(source: string): PriceTable {
   return table;
 }
 
+// LiteLLM keys some models only by reseller (azure_ai/, prism/, openrouter/),
+// and the resellers disagree by up to 7x; OpenRouter passes the vendor's list
+// price through, so it stands in for a bare name LiteLLM does not carry.
+const openrouterModel = /^openrouter\/[^/]+\/(.+)$/;
+
+export function priceFor(
+  table: PriceTable,
+  model: string,
+): ModelPrice | undefined {
+  const exact = table.get(model);
+  if (exact !== undefined) {
+    return exact;
+  }
+  for (const [key, price] of table) {
+    if (openrouterModel.exec(key)?.[1] === model) {
+      return price;
+    }
+  }
+  return undefined;
+}
+
 export function costOf(price: ModelPrice, usage: PricedUsage): number {
   return (
     usage.input * price.input +

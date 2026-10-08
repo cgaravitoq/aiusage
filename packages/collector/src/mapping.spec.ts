@@ -386,6 +386,42 @@ describe("mapAntigravitySteps", () => {
       ["2026-09-13", "gemini-unknown", 204],
     ]);
   });
+
+  it("prices a model the table only lists on OpenRouter", () => {
+    const pro = {
+      cacheCreate: 0,
+      cacheRead: 2e-7,
+      input: 2e-6,
+      output: 1.2e-5,
+    };
+    const listed = new Map([
+      ...prices,
+      ["openrouter/google/gemini-3.9-pro", pro],
+    ]);
+    const step: AntigravityStep = {
+      at: new Date("2026-09-13T12:31:00.000Z"),
+      cacheRead: 10,
+      input: 100,
+      model: "gemini-3.9-pro",
+      output: 20,
+    };
+
+    expect(mapAntigravitySteps([step], "Europe/Madrid", listed)).toEqual({
+      days: [
+        {
+          cache_create: 0,
+          cache_read: 10,
+          cost_usd: costOf(pro, { cacheRead: 10, input: 100, output: 20 }),
+          date: "2026-09-13",
+          input: 100,
+          model: "gemini-3.9-pro",
+          output: 20,
+          provider: "antigravity",
+        },
+      ],
+      warnings: [],
+    });
+  });
 });
 
 describe("mapDevinSteps", () => {
@@ -482,5 +518,83 @@ describe("mapDevinSteps", () => {
       ],
       warnings: ["devin: no price for swe-2"],
     });
+  });
+
+  it("dots a dashed minor version when only the dotted name has a price", () => {
+    const flash = {
+      cacheCreate: 0,
+      cacheRead: 1.5e-8,
+      input: 4.4e-8,
+      output: 3e-7,
+    };
+    const glm = {
+      cacheCreate: 0,
+      cacheRead: 3e-8,
+      input: 1.5e-7,
+      output: 5e-7,
+    };
+    const resold = {
+      cacheCreate: 0,
+      cacheRead: 6e-9,
+      input: 3e-7,
+      output: 1.2e-6,
+    };
+    const listed = new Map([
+      ...prices,
+      ["azure_ai/deepseek-v4.1-flash", resold],
+      ["openrouter/deepseek/deepseek-v4.1-flash", flash],
+      ["openrouter/z-ai/glm-5.3-flash", glm],
+    ]);
+    const measured: DevinStep[] = [
+      { ...steps[0], model: "claude-fable-5-1-xhigh" },
+      {
+        at,
+        cacheCreate: 0,
+        cacheRead: 14315904,
+        input: 817896,
+        model: "deepseek-v4-1-flash",
+        output: 44989,
+      },
+      {
+        at,
+        cacheCreate: 0,
+        cacheRead: 2000,
+        input: 900,
+        model: "glm-5-3-flash-high",
+        output: 70,
+      },
+      {
+        at,
+        cacheCreate: 0,
+        cacheRead: 0,
+        input: 300,
+        model: "swe-2-max",
+        output: 12,
+      },
+    ];
+
+    const mapped = mapDevinSteps(measured, "Europe/Madrid", listed);
+
+    expect(mapped.days.map((day) => [day.model, day.cost_usd])).toEqual([
+      [
+        "claude-fable-5-1",
+        costOf(fable, {
+          cacheCreate: 1100211,
+          cacheRead: 55834239,
+          input: 772,
+          output: 245921,
+        }),
+      ],
+      [
+        "deepseek-v4.1-flash",
+        costOf(flash, { cacheRead: 14315904, input: 817896, output: 44989 }),
+      ],
+      [
+        "glm-5.3-flash",
+        costOf(glm, { cacheRead: 2000, input: 900, output: 70 }),
+      ],
+      ["swe-2-max", 0],
+    ]);
+    expect(mapped.warnings).toEqual(["devin: no price for swe-2-max"]);
   });
 });
