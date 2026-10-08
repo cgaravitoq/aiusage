@@ -8,12 +8,12 @@ import {
   rotateApiKey,
 } from "@/server/auth";
 import { parseReport } from "@/server/report";
+import { cachedSummary } from "@/server/summary-cache";
 import type { UsageRange } from "@/server/usage";
 import {
   authenticateApiKey,
   hashApiKey,
   recordUsage,
-  summarizeUsage,
   usageRanges,
 } from "@/server/usage";
 
@@ -104,8 +104,9 @@ app.get(
       return context.json({ error: "invalid range" }, 400);
     }
 
-    const summary = await summarizeUsage(
+    const summary = await cachedSummary(
       context.env.DB,
+      new URL(context.req.url).origin,
       context.req.param("login"),
       range,
       new Date(),
