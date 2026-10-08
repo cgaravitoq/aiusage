@@ -1,7 +1,7 @@
 import type { AntigravityStep } from "./antigravity";
 import { type CcusageDaily, calendarDate } from "./ccusage";
 import type { DevinStep } from "./devin";
-import { costOf, type ModelPrice, type PriceTable } from "./pricing";
+import { costOf, type ModelPrice, type PriceTable, priceFor } from "./pricing";
 import type { UsageDay } from "./usage";
 
 export const antigravityProvider = "antigravity";
@@ -9,10 +9,16 @@ export const devinProvider = "devin";
 
 const agentModelPrefix = /^\[[^\]]*\]\s*/;
 const effortSuffix = /-(low|medium|high|xhigh)$/;
-const gptMinorVersion = /^gpt-(\d+)-(\d+)-/;
+const dashedMinorVersion = /(\d+)-(\d+)(?=-|$)/g;
 
-const litellmModel = (devinModel: string): string =>
-  devinModel.replace(effortSuffix, "").replace(gptMinorVersion, "gpt-$1.$2-");
+function litellmModel(devinModel: string, prices: PriceTable): string {
+  const name = devinModel.replace(effortSuffix, "");
+  const dotted = name.replace(dashedMinorVersion, "$1.$2");
+  return priceFor(prices, name) === undefined &&
+    priceFor(prices, dotted) !== undefined
+    ? dotted
+    : name;
+}
 
 const rowKey = (day: UsageDay): string =>
   `${day.date}\u0000${day.provider}\u0000${day.model}`;
@@ -151,7 +157,10 @@ export function mapAntigravitySteps(
     steps,
     antigravityProvider,
     timezone,
-    (model) => prices.get(model) ?? prices.get(`gemini/${model}`),
+    (model) =>
+      prices.get(model) ??
+      prices.get(`gemini/${model}`) ??
+      priceFor(prices, model),
   );
 }
 
@@ -160,11 +169,20 @@ export function mapDevinSteps(
   timezone: string,
   prices: PriceTable,
 ): MappedDays {
+  const names = new Map(
+    [...new Set(steps.map((step) => step.model))].map((model) => [
+      model,
+      litellmModel(model, prices),
+    ]),
+  );
   return mapLocalSteps(
-    steps.map((step) => ({ ...step, model: litellmModel(step.model) })),
+    steps.map((step) => ({
+      ...step,
+      model: names.get(step.model) ?? step.model,
+    })),
     devinProvider,
     timezone,
-    (model) => prices.get(model),
+    (model) => priceFor(prices, model),
   );
 }
 
