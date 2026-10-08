@@ -902,6 +902,15 @@ describe("summarizeUsage", () => {
     expect(summary?.totals.tokens).toBe(5);
   });
 
+  it("reads the user and the timezone of its latest machine in one query", async () => {
+    const db = await edgeDays();
+    const prepare = vi.spyOn(db, "prepare");
+
+    await summarizeUsage(db, "octocat", "week", now);
+
+    expect(prepare).toHaveBeenCalledTimes(2);
+  });
+
   it("windows the week range as the seven days ending today", async () => {
     const summary = await summarizeUsage(
       await edgeDays(),

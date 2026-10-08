@@ -55,6 +55,7 @@ interface ProviderUsage extends UsageAmount {
 interface FoundUser {
   id: number;
   login: string;
+  timezone: string;
 }
 
 const platformUuid =
@@ -243,15 +244,23 @@ export async function recordUsage(
   }
 }
 
-async function findUserId(
+async function findUser(
   db: D1Database,
   login: string,
 ): Promise<FoundUser | null> {
   const row = await db
-    .prepare("SELECT id, github_login FROM users WHERE github_login = ?")
+    .prepare(
+      `SELECT users.id, users.github_login, machines.timezone
+      FROM users LEFT JOIN machines ON machines.user_id = users.id
+      WHERE users.github_login = ?
+      ORDER BY machines.last_seen DESC, machines.machine_id
+      LIMIT 1`,
+    )
     .bind(login.toLowerCase())
-    .first<{ id: number; github_login: string }>();
-  return row === null ? null : { id: row.id, login: row.github_login };
+    .first<{ id: number; github_login: string; timezone: string | null }>();
+  return row === null
+    ? null
+    : { id: row.id, login: row.github_login, timezone: row.timezone ?? "UTC" };
 }
 
 function rangeDays(range: UsageRange): number {
@@ -274,19 +283,6 @@ function windowFor(range: UsageRange, now: Date, timezone: string) {
   return { from: from.toISOString().slice(0, 10), to };
 }
 
-async function machineTimezone(
-  db: D1Database,
-  userId: number,
-): Promise<string> {
-  const row = await db
-    .prepare(
-      "SELECT timezone FROM machines WHERE user_id = ? ORDER BY last_seen DESC, machine_id LIMIT 1",
-    )
-    .bind(userId)
-    .first<{ timezone: string }>();
-  return row?.timezone ?? "UTC";
-}
-
 function ranked<K extends string, V extends UsageAmount>(
   entries: Map<K, V>,
 ): [K, V][] {
@@ -302,10 +298,10 @@ export async function summarizeUsage(
   range: UsageRange,
   now: Date,
 ): Promise<UsageSummary | null> {
-  const user = await findUserId(db, login);
+  const user = await findUser(db, login);
   if (user === null) return null;
 
-  const timezone = await machineTimezone(db, user.id);
+  const { timezone } = user;
   const { from, to } = windowFor(range, now, timezone);
   const rows = await db
     .prepare(
