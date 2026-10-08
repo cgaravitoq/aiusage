@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { app } from "@/server/app";
 import type { UsageDay, UsageReport } from "@/server/report";
 import { hashApiKey } from "@/server/usage";
+import { stubCaches } from "@/test/memory-cache";
 import { createSqliteD1, type SqliteD1TestDatabase } from "@/test/sqlite-d1";
 
 const databases: SqliteD1TestDatabase[] = [];
@@ -220,10 +221,12 @@ function todayWindow(range: "day" | "week" | "month") {
 
 beforeEach(() => {
   vi.useFakeTimers({ now: fixedNow, toFake: ["Date"] });
+  stubCaches();
 });
 
 afterEach(() => {
   vi.useRealTimers();
+  vi.unstubAllGlobals();
   for (const sqlite of databases) sqlite.close();
   databases.length = 0;
 });

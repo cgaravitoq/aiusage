@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import type { APIContext } from "astro";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { stubCaches } from "@/test/memory-cache";
 import { createSqliteD1, type SqliteD1TestDatabase } from "@/test/sqlite-d1";
 import { ALL as apiRoute } from "../pages/api/[...path]";
 import { ALL as authRoute } from "../pages/auth/[...path]";
@@ -32,6 +33,7 @@ async function forward(route: Route, url: string, method: string) {
 describe("catch-all routes", () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     for (const sqlite of databases) sqlite.close();
     databases.length = 0;
   });
@@ -62,6 +64,7 @@ describe("catch-all routes", () => {
       "INSERT INTO users (github_login, avatar_url) VALUES ('octocat', 'https://example.com/avatar.png')",
     );
     Object.assign(env, { DB: sqlite.asD1() });
+    stubCaches();
 
     const response = await apiRoute(
       context("http://aiusage.test/api/u/octocat/summary", "GET"),
