@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.3.3",
-    "@astrojs/vue": "7.0.2",
+    "@astrojs/vue": "7.0.3",
     "astro": "7.3.4",
     "hono": "4.13.8",
     "unstorage": "^1.17.5",
