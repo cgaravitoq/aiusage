@@ -48,6 +48,8 @@ describe("GET /", () => {
     expect(html).toContain(
       `${origin}</code> in <code>script-src</code> and <code>connect-src</code>`,
     );
+    expect(html).toContain("only its own logins can sign in");
+    expect(html).toContain('href="https://github.com/cgaravitoq/aiusage"');
     expect(html).toContain("revokes every existing key");
     expect(html).toContain('href="/privacy"');
     expect(html).toMatch(/<\/main>\s*<footer>/);
