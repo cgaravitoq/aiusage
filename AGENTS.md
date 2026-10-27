@@ -58,8 +58,9 @@ bun run build                  # astro build in apps/worker
 
 The worker is `apps/worker`, package `@aiusage/worker`: Astro 7 with the Cloudflare adapter, a Hono 4 API under `src/server`, two Vue 3 islands on `/keys` and `/` and D1 for storage.
 `bun run build` builds it from the root and `bun run dev` serves it with `astro dev`.
-Bindings come from `apps/worker/wrangler.jsonc` and are typed by `bunx wrangler types` into `worker-configuration.d.ts`, which is generated and never hand-edited; the six plain secrets are typed by hand in `src/env.d.ts` and set locally through `apps/worker/.dev.vars`.
+Bindings come from `apps/worker/wrangler.jsonc` and are typed by `bunx wrangler types` into `worker-configuration.d.ts`, which is generated and never hand-edited; the seven plain secrets are typed by hand in `src/env.d.ts` and set locally through `apps/worker/.dev.vars`.
 The privacy page renders the four `PRIVACY_*` secrets, so every instance carries its own controller identity.
+`ALLOWED_LOGINS` lists the GitHub logins that may sign in, so an instance serves only its own people.
 The worker also serves `<aiusage-island>` at `/widget/v1.js` from `apps/worker/src/widget`: a dependency-free web component any site embeds with `<script src="<url>/widget/v1.js" defer></script><aiusage-island login="jane">`.
 `bun run build` bundles `src/widget/index.ts` into the gitignored `apps/worker/public/widget/v1.js` with `bun build` before `astro build` copies `public/` into the adapter's client directory, and `apps/worker/public/_headers` gives that path `Cache-Control: public, max-age=3600`.
 The widget is browser code, so `apps/worker/src/widget/tsconfig.json` checks it against the DOM lib with `tsc --noEmit` and `apps/worker/tsconfig.json` excludes that directory, because the workerd globals in `worker-configuration.d.ts` shadow `Element.append`.
