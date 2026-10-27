@@ -37,6 +37,7 @@ interface AiusageBindings {
   DB: D1Database;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
+  ALLOWED_LOGINS: string;
 }
 
 interface GithubRequest {
@@ -82,6 +83,7 @@ function environment(db: D1Database): AiusageBindings {
     DB: db,
     GITHUB_CLIENT_ID: clientId,
     GITHUB_CLIENT_SECRET: clientSecret,
+    ALLOWED_LOGINS: "someone, Octocat",
   };
 }
 
@@ -498,6 +500,29 @@ describe("GET /auth/github/callback", () => {
     expect(
       sqlite.query("SELECT key_hash FROM api_keys WHERE revoked_at IS NULL"),
     ).toEqual([{ key_hash: await hashApiKey(key) }]);
+  });
+
+  it("answers 403 to a login outside the allowed logins and writes nothing", async () => {
+    const sqlite = database();
+    stubGithub([
+      { body: JSON.stringify({ access_token: githubToken }) },
+      { body: JSON.stringify({ login: "stranger", avatar_url: avatarUrl }) },
+    ]);
+
+    const response = await app.request(
+      callbackUrl("state-a"),
+      callbackInit("state-a"),
+      environment(sqlite.asD1()),
+    );
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({
+      error: "login not allowed",
+    });
+    expectStateCleared(response);
+    expect(response.headers.getSetCookie()).toHaveLength(1);
+    expect(sqlite.query("SELECT github_login FROM users")).toEqual([]);
+    expect(sqlite.query("SELECT key_hash FROM api_keys")).toEqual([]);
   });
 
   it("stores a GitHub login in lowercase", async () => {

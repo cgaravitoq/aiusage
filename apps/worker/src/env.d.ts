@@ -3,6 +3,7 @@
 
 declare namespace Cloudflare {
   interface Env {
+    ALLOWED_LOGINS: string;
     GITHUB_CLIENT_ID: string;
     GITHUB_CLIENT_SECRET: string;
     PRIVACY_AUTHORITY_NAME: string;

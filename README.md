@@ -19,7 +19,8 @@ A Cloudflare account, Bun 1.4.0 and `bunx wrangler login`.
 3. Point `routes[0].pattern` in `apps/worker/wrangler.jsonc` at the domain you serve, and create a GitHub OAuth app whose callback URL is `https://<domain>/auth/github/callback`.
    `workers_dev` and `preview_urls` are off, so the worker answers on that domain alone.
    The `deploy` job smoke-tests the domain as well, so replace every `aiusage.cgaravito.dev` in `.github/workflows/ci.yml` and `scripts/ci-deploy-jobs.test.ts` with your domain before the first push to `main`, or `bun run test:dependency-policy` fails the `ci` job and the worker never deploys.
-4. Set the six secrets with `bunx wrangler secret put`: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `PRIVACY_CONTROLLER`, `PRIVACY_EMAIL`, `PRIVACY_AUTHORITY_NAME` and `PRIVACY_AUTHORITY_URL`.
+4. Set the seven secrets with `bunx wrangler secret put`: `ALLOWED_LOGINS`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `PRIVACY_CONTROLLER`, `PRIVACY_EMAIL`, `PRIVACY_AUTHORITY_NAME` and `PRIVACY_AUTHORITY_URL`.
+   `ALLOWED_LOGINS` is the comma-separated list of GitHub logins that may sign in, matched in any case, and the sign-in answers 403 to every other login.
 5. From `apps/worker`, run `bunx wrangler d1 migrations apply DB --remote`.
 6. Run `bun run build` from the root, then deploy by pushing to `main` with the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, or with `bunx wrangler deploy` from `apps/worker`.
 7. Sign in at `/auth/github` and copy the key shown once at `/keys`.
@@ -27,7 +28,7 @@ A Cloudflare account, Bun 1.4.0 and `bunx wrangler login`.
 
 ### Local development
 
-Copy `apps/worker/.dev.vars.example` to `apps/worker/.dev.vars` and fill the six values, run `bunx wrangler d1 migrations apply DB --local` from `apps/worker`, create a second GitHub OAuth app whose callback is `http://localhost:8787/auth/github/callback`, then run `bun run build` from the root and `bunx wrangler dev --port 8787` from `apps/worker`.
+Copy `apps/worker/.dev.vars.example` to `apps/worker/.dev.vars` and fill the seven values, run `bunx wrangler d1 migrations apply DB --local` from `apps/worker`, create a second GitHub OAuth app whose callback is `http://localhost:8787/auth/github/callback`, then run `bun run build` from the root and `bunx wrangler dev --port 8787` from `apps/worker`.
 The callback is derived from the request origin, so no other configuration is needed.
 
 ### Public API
@@ -43,7 +44,7 @@ Every response of that route, the errors included, carries `Access-Control-Allow
 The Worker serves it at `/widget/v1.js`, so an instance that hosts the widget needs nothing else.
 
 ```html
-<script src="https://aiusage.cgaravito.dev/widget/v1.js" defer></script>
+<script src="https://<your-instance>/widget/v1.js" defer></script>
 <aiusage-island login="jane"></aiusage-island>
 ```
 

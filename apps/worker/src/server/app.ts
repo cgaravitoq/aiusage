@@ -58,6 +58,12 @@ function bearerKey(header: string | undefined): string | null {
   return header?.startsWith(prefix) ? header.slice(prefix.length) : null;
 }
 
+function isAllowedLogin(allowedLogins: string, login: string): boolean {
+  return allowedLogins
+    .split(",")
+    .some((allowed) => allowed.trim().toLowerCase() === login.toLowerCase());
+}
+
 function isUsageRange(value: string): value is UsageRange {
   return usageRanges.some((range) => range === value);
 }
@@ -178,6 +184,9 @@ app.get("/auth/github/callback", async (context) => {
   const user = githubProfile.safeParse(await profile.json().catch(() => null));
   if (!profile.ok || !user.success) {
     return context.json({ error: "github profile failed" }, 502);
+  }
+  if (!isAllowedLogin(context.env.ALLOWED_LOGINS, user.data.login)) {
+    return context.json({ error: "login not allowed" }, 403);
   }
 
   const key = generateApiKey();
