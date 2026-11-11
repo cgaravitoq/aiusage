@@ -1,6 +1,6 @@
 {
   "name": "@cgaravitoq/aiusage",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Report local ccusage token usage to an aiusage instance",
   "type": "module",
   "bin": {
@@ -32,7 +32,7 @@
     "test:watch": "vitest --exclude src/package.e2e.spec.ts"
   },
   "dependencies": {
-    "ccusage": "20.0.26",
+    "ccusage": "20.0.50",
     "commander": "^15.1.0",
     "zod": "^4.6.7"
   },
