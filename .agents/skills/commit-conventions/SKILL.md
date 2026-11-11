@@ -1,4 +1,5 @@
 ---
+
 name: commit-conventions
 description: Commit message rules, pre-commit hooks, and lint-staged workflow for this repo. Use when committing changes, debugging a blocked commit, or investigating why a commit was rejected by Husky/commitlint.
 ---
@@ -21,19 +22,19 @@ Commit messages must follow [Conventional Commits](https://www.conventionalcommi
 
 Allowed types (from `@commitlint/config-conventional`):
 
-| Type | When |
-|------|------|
-| `feat` | New user-facing feature |
-| `fix` | Bug fix |
+| Type       | When                                     |
+| ---------- | ---------------------------------------- |
+| `feat`     | New user-facing feature                  |
+| `fix`      | Bug fix                                  |
 | `refactor` | Code restructure without behavior change |
-| `perf` | Performance improvement |
-| `docs` | Documentation only |
-| `test` | Adding / updating tests |
-| `chore` | Tooling, deps, non-user changes |
-| `ci` | CI pipeline changes |
-| `style` | Formatting, no logic change |
-| `build` | Build system / external deps |
-| `revert` | Revert a previous commit |
+| `perf`     | Performance improvement                  |
+| `docs`     | Documentation only                       |
+| `test`     | Adding / updating tests                  |
+| `chore`    | Tooling, deps, non-user changes          |
+| `ci`       | CI pipeline changes                      |
+| `style`    | Formatting, no logic change              |
+| `build`    | Build system / external deps             |
+| `revert`   | Revert a previous commit                 |
 
 Examples:
 
@@ -71,14 +72,14 @@ bun run check-types
 
 ## Typical failure modes
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| "✖ subject may not be empty" | Missing or wrong type | Use `<type>: <subject>` |
-| "✖ type must be one of …" | Typo in type | Use an allowed type from the table above |
-| Biome errors "x file(s) with errors" | Unfixable lint issue | Run `bun run format:fix`, resolve manually, re-stage |
-| oxlint "Found N warnings/errors" | An anti-slop rule hit a staged file | Run `bun run lint:slop`, fix the reported rule, re-stage |
-| "Type error in …" | TypeScript failure somewhere in the monorepo | Run `bun run check-types` locally, fix |
-| Hook didn't run | Husky not installed | Run `bun install` (triggers `prepare` script) |
+| Symptom                              | Cause                                        | Fix                                                      |
+| ------------------------------------ | -------------------------------------------- | -------------------------------------------------------- |
+| "✖ subject may not be empty"         | Missing or wrong type                        | Use `<type>: <subject>`                                  |
+| "✖ type must be one of …"            | Typo in type                                 | Use an allowed type from the table above                 |
+| Biome errors "x file(s) with errors" | Unfixable lint issue                         | Run `bun run format:fix`, resolve manually, re-stage     |
+| oxlint "Found N warnings/errors"     | An anti-slop rule hit a staged file          | Run `bun run lint:slop`, fix the reported rule, re-stage |
+| "Type error in …"                    | TypeScript failure somewhere in the monorepo | Run `bun run check-types` locally, fix                   |
+| Hook didn't run                      | Husky not installed                          | Run `bun install` (triggers `prepare` script)            |
 
 ## Workflow
 

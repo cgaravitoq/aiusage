@@ -1,4 +1,5 @@
 ---
+
 name: biome-lint
 description: Biome 2.5 configuration, formatting, and lint rules for this repo. Use when running format/lint commands, fixing lint errors, adjusting rules, or adding ignore comments. Biome replaces ESLint + Prettier here.
 ---
@@ -65,20 +66,20 @@ For whole files or directories, add a negated glob to `files.includes` in `biome
 
 The table lists examples of enabled rules; check `biome.json`, its preset and its overrides before adding a suppression.
 
-| Rule | Level | Meaning |
-|------|-------|---------|
-| `lint/correctness/noUnusedImports` | error | Remove imports nothing references |
-| `lint/correctness/noUnusedVariables` | error | Remove bindings nothing reads |
-| `lint/correctness/noUnusedFunctionParameters` | error | Drop parameters the body never uses |
-| `lint/correctness/noUnreachable` | error | Delete code after a return or throw |
-| `lint/style/useImportType` | warn | Use `import type { X }` for type-only imports |
-| `lint/style/useConsistentArrayType` | warn | Write `T[]`, not `Array<T>` |
-| `lint/style/useSelfClosingElements` | error | Close empty JSX elements in place |
-| `lint/style/noUselessElse` | error | Drop an `else` after a returning `if` |
-| `lint/style/noInferrableTypes` | error | Drop annotations the initializer already implies |
-| `lint/a11y/useAltText` | error | Images need alternative text |
-| `lint/a11y/useButtonType` | error | Buttons need an explicit `type` |
-| `lint/a11y/noSvgWithoutTitle` | error | Inline SVG needs a `<title>` |
+| Rule                                          | Level | Meaning                                          |
+| --------------------------------------------- | ----- | ------------------------------------------------ |
+| `lint/correctness/noUnusedImports`            | error | Remove imports nothing references                |
+| `lint/correctness/noUnusedVariables`          | error | Remove bindings nothing reads                    |
+| `lint/correctness/noUnusedFunctionParameters` | error | Drop parameters the body never uses              |
+| `lint/correctness/noUnreachable`              | error | Delete code after a return or throw              |
+| `lint/style/useImportType`                    | warn  | Use `import type { X }` for type-only imports    |
+| `lint/style/useConsistentArrayType`           | warn  | Write `T[]`, not `Array<T>`                      |
+| `lint/style/useSelfClosingElements`           | error | Close empty JSX elements in place                |
+| `lint/style/noUselessElse`                    | error | Drop an `else` after a returning `if`            |
+| `lint/style/noInferrableTypes`                | error | Drop annotations the initializer already implies |
+| `lint/a11y/useAltText`                        | error | Images need alternative text                     |
+| `lint/a11y/useButtonType`                     | error | Buttons need an explicit `type`                  |
+| `lint/a11y/noSvgWithoutTitle`                 | error | Inline SVG needs a `<title>`                     |
 
 This repository keeps the `a11y` recommended set off beyond the three rules listed above, and turns `noTemplateCurlyInString` off for `scripts/*.test.ts`, whose fixtures assert GitHub Actions expressions inside string literals. Every other recommended rule is on, so check `biome.json` before reaching for a suppression.
 The override at `biome.json` for `**/*.astro` turns `noUnusedImports` and `noUnusedVariables` off, so frontmatter bindings used only in the template are not flagged.
